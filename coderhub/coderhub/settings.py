@@ -94,23 +94,37 @@ WSGI_APPLICATION = 'coderhub.wsgi.application'
 #     }
 # }
 
+# import os
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('DB_NAME','ch'),  # Using 'ch' as a fallback if not set
+#         'USER': os.environ.get('DB_USER'),  # Default user if not set
+#         'PASSWORD': os.environ.get('DB_PASSWORD'),  # Default password if not set
+#         'HOST': os.environ.get('DB_HOST'),  # Default host if not set
+#         'PORT': os.environ.get('DB_PORT', '3306'),  # Default port if not set
+   
+
+#   'OPTIONS': {  # Add this section
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         }
+#     }
+
+# }
+
+# settings.py
 import os
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME','ch'),  # Using 'ch' as a fallback if not set
-        'USER': os.environ.get('DB_USER'),  # Default user if not set
-        'PASSWORD': os.environ.get('DB_PASSWORD'),  # Default password if not set
-        'HOST': os.environ.get('DB_HOST'),  # Default host if not set
-        'PORT': os.environ.get('DB_PORT', '3306'),  # Default port if not set
-   
-
-  'OPTIONS': {  # Add this section
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
-
 }
 
 

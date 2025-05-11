@@ -25,13 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^=jgb=cxo_a+$_kpj2-**)#yp_11@66^w6rh%btort*+87lp!x'
+SECRET_KEY = os.environ.get('SECRET_KEY', ')yrx1x(khrd(7f=t2mwn+56l$yss$&o&ja+ccw95v94h$g8%+=')  # Use a default only for local dev
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'coder-hub-e3xl.onrender.com,localhost').split(',')
 
 # Application definition
 
@@ -44,12 +42,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myadmin',
     'user',
-     'imagekit',
+    'imagekit',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -66,6 +69,8 @@ TEMPLATES = [
         'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
+    
+
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -89,19 +94,23 @@ WSGI_APPLICATION = 'coderhub.wsgi.application'
 #     }
 # }
 
+import os
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "ch",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-        'OPTIONS': {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME','ch'),  # Using 'ch' as a fallback if not set
+        'USER': os.environ.get('DB_USER'),  # Default user if not set
+        'PASSWORD': os.environ.get('DB_PASSWORD'),  # Default password if not set
+        'HOST': os.environ.get('DB_HOST'),  # Default host if not set
+        'PORT': os.environ.get('DB_PORT', '3306'),  # Default port if not set
+   
+
+  'OPTIONS': {  # Add this section
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        }
     }
+
 }
 
 
@@ -150,16 +159,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
+# Tell Django to compress and cache static files
+
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ← Add this line
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # ← Uncomment/modify this
 
-# Add these new lines
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -179,5 +186,27 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'coderhub615@gmail.com'
-EMAIL_HOST_PASSWORD = 'vzjmwhlcrdsmfpds'  # Use an app password, not your regular password
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Move to Render environment variables  # Use an app password, not your regular password
 DEFAULT_FROM_EMAIL = 'coderhub@gmail.com'
+
+# HTTPS Settings (Render uses HTTPS)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = os.environ.get('DJANGO_ENV') == 'production'
+
+# HSTS Settings
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+
+# Production/development detection
+DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development')
+
+if DJANGO_ENV == 'production':
+    # Disable browsable API in production
+   REST_FRAMEWORK   = {
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    }

@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'user/css/bootstrap.css' %}">
+</head>
+<body>
+    
+{% block content %}
+<div class="container mt-4">
+  
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ submission.subject }}</h5>
+            <p class="card-text">
+                <strong>From:</strong> {{ submission.name }} &lt;{{ submission.email }}&gt;<br>
+                <strong>Received:</strong> {{ submission.submitted_at|date:"M d, Y H:i" }}
+            </p>
+            <div class="border-top pt-3">
+                <p>{{ submission.message }}</p>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'admin_contact_submissions' %}" class="btn btn-secondary mt-3">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+{% endblock %}
+</body>
+</html>

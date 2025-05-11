@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .submit-btn {
+            margin-top: 2rem;
+            width: 100%;
+        }
+        #timer {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 class="text-center mb-4">Python Programming Quiz</h2>
+        <div id="timer">Time Left:7:00</div>
+        <form method="post" action="{% url 'take_quiz' quiz.id %}">  
+            {% csrf_token %}
+            <!-- Question 1 -->
+            <div class="question">
+                <p>1. What is the output of print(2 ** 3)?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" value="a">
+                    <label class="form-check-label">a) 6</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" value="b">
+                    <label class="form-check-label">b) 8</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" value="c">
+                    <label class="form-check-label">c) 9</label>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question">
+                <p>2. Which keyword is used to define a function in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" value="a">
+                    <label class="form-check-label">a) def</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" value="b">
+                    <label class="form-check-label">b) function</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" value="c">
+                    <label class="form-check-label">c) define</label>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question">
+                <p>3. What does PEP 8 refer to?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" value="a">
+                    <label class="form-check-label">a) Python Enhancement Proposal for style guide</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" value="b">
+                    <label class="form-check-label">b) A Python library for web scraping</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" value="c">
+                    <label class="form-check-label">c) A Python version number</label>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question">
+                <p>4. What is the correct file extension for Python files?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" value="a">
+                    <label class="form-check-label">a) .py</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" value="b">
+                    <label class="form-check-label">b) .pyt</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" value="c">
+                    <label class="form-check-label">c) .python</label>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question">
+                <p>5. What data type is the result of 3 / 2?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" value="a">
+                    <label class="form-check-label">a) Integer</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" value="b">
+                    <label class="form-check-label">b) Float</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" value="c">
+                    <label class="form-check-label">c) String</label>
+                </div>
+            </div>
+
+            <!-- Questions 6-30 -->
+            <div class="question">
+                <p>6. How do you insert an element into a list?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" value="a">
+                    <label class="form-check-label">a) list.add()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" value="b">
+                    <label class="form-check-label">b) list.append()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" value="c">
+                    <label class="form-check-label">c) list.insert()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>7. Which of the following is used for comments in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q7" value="a">
+                    <label class="form-check-label">a) //</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q7" value="b">
+                    <label class="form-check-label">b) #</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q7" value="c">
+                    <label class="form-check-label">c) /* */</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>8. What is the output of print(type([]))?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" value="a">
+                    <label class="form-check-label">a) <class 'list'></label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" value="b">
+                    <label class="form-check-label">b) <class 'dict'></label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" value="c">
+                    <label class="form-check-label">c) <class 'tuple'></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>9. What function is used to read a file in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" value="a">
+                    <label class="form-check-label">a) read_file()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" value="b">
+                    <label class="form-check-label">b) open()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" value="c">
+                    <label class="form-check-label">c) get_file()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>10. Which of the following is a mutable data type?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q10" value="a">
+                    <label class="form-check-label">a) String</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q10" value="b">
+                    <label class="form-check-label">b) Tuple</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q10" value="c">
+                    <label class="form-check-label">c) List</label>
+                </div>
+            </div>
+
+            <!-- Continue adding questions until question 30 -->
+            <!-- Repeat the pattern similar to previous questions -->
+            <div class="question">
+                <p>11. Which of the following is not a valid variable name?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" value="a">
+                    <label class="form-check-label">a) _var</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" value="b">
+                    <label class="form-check-label">b) 1var</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" value="c">
+                    <label class="form-check-label">c) var1</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>12. What method is used to add an element at the end of a list?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" value="a">
+                    <label class="form-check-label">a) append()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" value="b">
+                    <label class="form-check-label">b) insert()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" value="c">
+                    <label class="form-check-label">c) add()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>13. What is the output of 10 == 10?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" value="a">
+                    <label class="form-check-label">a) True</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" value="b">
+                    <label class="form-check-label">b) False</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" value="c">
+                    <label class="form-check-label">c) Error</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>14. Which of the following is the correct syntax to output "Hello World"?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" value="a">
+                    <label class="form-check-label">a) print("Hello World")</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" value="b">
+                    <label class="form-check-label">b) echo("Hello World")</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" value="c">
+                    <label class="form-check-label">c) printf("Hello World")</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>15. What is the main function of the `len()` function?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q15" value="a">
+                    <label class="form-check-label">a) To return the length of an object</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q15" value="b">
+                    <label class="form-check-label">b) To convert an object to a list</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q15" value="c">
+                    <label class="form-check-label">c) To add two lists</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>16. What does the `strip()` method do?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" value="a">
+                    <label class="form-check-label">a) Removes whitespace from the beginning and end of a string</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" value="b">
+                    <label class="form-check-label">b) Converts a string to uppercase</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" value="c">
+                    <label class="form-check-label">c) Replaces a substring in a string</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>17. How do you start a function definition in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" value="a">
+                    <label class="form-check-label">a) function myFunction():</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" value="b">
+                    <label class="form-check-label">b) def myFunction:</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" value="c">
+                    <label class="form-check-label">c) def myFunction():</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>18. What will be the output of `print(bool(""))`?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" value="a">
+                    <label class="form-check-label">a) True</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" value="b">
+                    <label class="form-check-label">b) False</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" value="c">
+                    <label class="form-check-label">c) None</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>19. What is the output of `print(round(7/3))`?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q19" value="a">
+                    <label class="form-check-label">a) 2</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q19" value="b">
+                    <label class="form-check-label">b) 3</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q19" value="c">
+                    <label class="form-check-label">c) 4</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>20. How do you declare a set in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" value="a">
+                    <label class="form-check-label">a) mySet = {1, 2, 3}</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" value="b">
+                    <label class="form-check-label">b) mySet = set(1, 2, 3)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" value="c">
+                    <label class="form-check-label">c) mySet = [1, 2, 3]</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>21. What is the output of `print(5 == 5 and 3 > 2)`?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q21" value="a">
+                    <label class="form-check-label">a) True</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q21" value="b">
+                    <label class="form-check-label">b) False</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q21" value="c">
+                    <label class="form-check-label">c) Error</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>22. Which of the following statements is used to create a new list?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" value="a">
+                    <label class="form-check-label">a) list = [ ]</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" value="b">
+                    <label class="form-check-label">b) list = { }</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" value="c">
+                    <label class="form-check-label">c) list = ( )</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>23. Which of the following is the correct syntax for a while loop?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" value="a">
+                    <label class="form-check-label">a) while n > 0: </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" value="b">
+                    <label class="form-check-label">b) loop while n > 0:</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" value="c">
+                    <label class="form-check-label">c) for n > 0:</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>24. How do you create a dictionary in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q24" value="a">
+                    <label class="form-check-label">a) myDict = []</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q24" value="b">
+                    <label class="form-check-label">b) myDict = {}</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q24" value="c">
+                    <label class="form-check-label">c) myDict = ()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>25. What will be the output of `print("Hello " + "World")`?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q25" value="a">
+                    <label class="form-check-label">a) HelloWorld</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q25" value="b">
+                    <label class="form-check-label">b) Hello World</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q25" value="c">
+                    <label class="form-check-label">c) Error</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>26. What is the purpose of the `break` statement?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q26" value="a">
+                    <label class="form-check-label">a) To break a loop</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q26" value="b">
+                    <label class="form-check-label">b) To exit a function</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q26" value="c">
+                    <label class="form-check-label">c) To continue to the next iteration</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>27. What does the `continue` statement do?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q27" value="a">
+                    <label class="form-check-label">a) Skips the current iteration</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q27" value="b">
+                    <label class="form-check-label">b) Breaks the loop</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q27" value="c">
+                    <label class="form-check-label">c) Ends the program</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>28. What function will you use to find the maximum value in a list?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q28" value="a">
+                    <label class="form-check-label">a) max()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q28" value="b">
+                    <label class="form-check-label">b) maximum()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q28" value="c">
+                    <label class="form-check-label">c) highest()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>29. Which of the following methods can be used to convert a string to a float?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q29" value="a">
+                    <label class="form-check-label">a) float()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q29" value="b">
+                    <label class="form-check-label">b) str_to_float()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q29" value="c">
+                    <label class="form-check-label">c) convert()</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>30. Which of the following methods is used to remove an item from a dictionary?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q30" value="a">
+                    <label class="form-check-label">a) del</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q30" value="b">
+                    <label class="form-check-label">b) remove()</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q30" value="c">
+                    <label class="form-check-label">c) pop()</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add timer functionality
+        let timeLeft = 420; // 30 minutes in seconds
+        const timer = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').innerHTML = 
+                `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                document.forms[0].submit();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+<STYLE>
+    .t1{
+        color: black;
+        text-align: justify;
+
+
+
+
+    }
+    .y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+       background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.l1 {
+    background-color: #fac564 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem !important;
+
+
+}
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+    margin-top: 10px;
+}
+
+/* Existing scroll styles */
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Ensure menu stays black when both scrolled and open */
+.navbar.scrolled.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+
+
+
+
+    /* Optional: You can set a border, if needed */
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+
+ 
+
+}
+
+
+    /* Navbar styling */
+    .navbar {
+        background-color: transparent !important;
+        transition: background-color 0.5s ease-in-out;
+    }
+    .navbar.scrolled {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .nav-item {
+        font-size: 20px;
+    }
+
+
+
+  
+
+
+
+.c1{
+    margin-top: 120px;
+    margin-bottom: 200px;
+}
+
+
+
+
+/* Ensure rows have consistent height */
+.m1 {
+    background-color: white;
+    min-height: 500px;
+    height: 1px; /* Enable child height inheritance */
+}
+
+
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+
+ 
+
+}
+
+
+
+
+/* Optional: You can set a border, if needed */
+
+ 
+/* Full-screen background image */
+
+
+
+
+
+
+
+ 
+
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+
+
+/* Optional: You can set a border, if needed */
+
+ 
+
+/* Full-screen background image */
+
+
+/* Navbar styling */
+
+
+.fi{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px auto;
+}
+
+   .footer {
+        background-color: #000000 !important; /* Black background */
+        min-height: 15vh;
+        padding: 2rem 0;
+        overflow: hidden;
+    }
+
+
+    .social-icons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .social-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3); /* Silver shadow */
+    }
+
+    .social-icon i {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+    }
+
+    .social-icon:hover i {
+        color: #fff;
+    }
+
+    /* Specific icon hover colors */
+    .social-icon:hover:nth-child(1) { background-color: #E1306C; } /* Instagram */
+    .social-icon:hover:nth-child(2) { background-color: #1877F2; } /* Facebook */
+    .social-icon:hover:nth-child(3) { background-color: #000000; } /* Twitter/X */
+    .social-icon:hover:nth-child(4) { background-color: #333333; } /* GitHub */
+
+    .footer h4, .footer h6 {
+        color: white !important;
+    }
+
+    .footer hr {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+
+
+.q1 {
+    position: relative;
+    overflow: hidden;
+}
+
+.m1 {
+    background-color: white;
+    min-height: 500px;
+    height: 1px; /* Enable flex-grow */
+    display: flex; /* Make row a flex container */
+    margin: 2rem 0;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.row.m1 {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+
+.quiz-image {.row.m1 {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    min-height: 100%; /* Fill entire column height */
+}
+.row.m1 > [class^="col-"] {
+    flex: 1; /* Make columns grow equally */
+    display: flex;
+    padding: 0 !important; /* Remove default padding */
+}
+
+/* Text content styling */
+.m1 .t1 {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Button styling */
+.m1 .btn {
+    margin-top: 1rem;
+    max-width: 200px;
+    margin: 0px 25px;
+}
+
+/* For the special container with fixed height */
+.container.bg-light.mb-5  {
+    height: 300px; /* Match your explicit height */
+    object-fit: cover;
+}
+       /* Add these new styles */
+        .custom-carousel {
+            max-width: 600px;
+            height: 500px;
+            margin: 100px auto 20px; /* Centers the carousel */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .custom-carousel .carousel-inner,
+        .custom-carousel .carousel-item {
+            height: 100%;
+        }
+
+        .custom-carousel img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-indicators {
+            bottom: -40px;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            background-color: #666;
+        }
+
+        .carousel-indicators .active {
+            background-color: #fac564;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 15%;
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* Adjust navbar spacing */
+        .navbar {
+            padding: 10px 0;
+        }
+        /* Add these styles to your existing CSS */
+.card {
+    min-height: 380px; /* Set minimum height for all cards */
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.t1 {
+    margin-top: auto; /* Push button to bottom */
+    padding: 15px;
+    text-align: center;
+}
+
+.btn-outline-dark {
+    width: 200px; /* Fixed width */
+    padding: 12px 0; /* Consistent vertical padding */
+    font-size: 1rem; /* Consistent font size */
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+    background-color: #333;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Ensure cards have equal height in row */
+.row.g-4 {
+    align-items: stretch;
+}
+
+.col-md-4 {
+    display: flex;
+}
+
+
+
+
+
+</STYLE>
+</head>
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbar = document.querySelector('.navbar');
+        
+        function updateNavbar() {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Initial check
+        updateNavbar();
+        
+        // Update on scroll
+        window.addEventListener('scroll', updateNavbar);
+    });
+    </script>
+
+<script>
+  
+function showFullImage(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    // Clear previous image
+    modalImage.src = '';
+    // Set new image source directly
+    modalImage.src = imageUrl;
+    
+    // Optional: Add loading state
+    modalImage.onload = function() {
+        URL.revokeObjectURL(this.src);
+    };
+}
+
+
+
+// Optional: Handle image quality
+document.querySelectorAll('.image-hover-container img').forEach(img => {
+    img.style.imageRendering = 'high-quality';
+    img.loading = 'eager'; // Prioritize loading
+});
+</script>
+
+
+ 
+<body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+        <div class="container ">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link " href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link "  href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'service' %}">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                        </li>
+                    </ul>
+                </div>
+         <ul class="navbar-nav d-flex align-items-center">
+        <li class="nav-item dropdown">
+            {% if user.is_authenticated %}
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                   id="userDropdown" role="button" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" 
+                             alt="Profile Picture" 
+                             class="default-icon me-2">
+                    {% else %}
+                        <div class="default-icon me-2">
+                            <i class="fa-solid fa-user text-light fs-5"></i>
+                        </div>
+                    {% endif %}
+                    <span class="email-display fs-6">{{ user.email }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" 
+                    aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                        <i class="fa-regular fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'change_password' %}">
+                        <i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                </ul>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+            {% endif %}
+        </li>
+    </ul>
+            </div>
+        </div>
+    </nav>
+
+          <div class="container-fluid y1  "  style="background: url('{% static 'user/images/rocky.jpg' %}') no-repeat center center fixed; background-size: cover;">
+       <h1>OUR SERVICES</h1>
+
+        </div>
+
+
+    <!-- Services Content Section -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-4"  >
+                <div class="card h-100 shadow" > 
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"><i class="fas fa-file-code"></i>
+Free Projects</h5>
+
+                        <p class="card-text mt-3 " style="text-align: justify;">At Coder's Hub, we provide free, high-quality coding projects that help users understand different programming concepts and frameworks. Whether you are a beginner looking for simple projects or an advanced developer exploring complex applications, our project repository offers something for everyone.</p>
+                        <div class="t1">
+      
+                    <a class="btn btn-outline-dark" href="{% url 'projects' %}">Free Projects</a>
+                
+</div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"><i class="fas fa-comments"></i> 
+ Live Chat
+Queries Solutions</h5>
+                        <p class="card-text  mt-3" style="text-align: justify;">Get Solution
+Stuck on a programming problem? At Coder's Hub, we understand that debugging and troubleshooting can be frustrating. That's why we offer a smart problem-solving service, where users can upload a screenshot or photo of their coding issue and get an expert solution quickly.</p>
+<div class="t1">
+
+                    <a class="btn btn-outline-dark" href="{% url 'solution' %}">Solution</a>
+                
+
+</div>                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"> <i class="fa fa-code"></i> Coding Quizzes</h5>
+                        <p class="card-text mt-3" style="text-align: justify;">
+Test Your Skills, Learn & Get Rewarded! At Coder's Hub, we believe that learning should be fun and rewarding. Our interactive coding quizzes help you test your programming knowledge while giving you the chance to win exciting redeem codes.</p>
+<div class="t1">
+ <a class="btn btn-outline-dark" href="{% url 'quiz' %}">Quiz</a>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--   <div class="container">
+        <div class="custom-carousel">
+            <div id="serviceCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'user/images/about.jpg' %}" class="d-block w-100" alt="Web Development">
+                        <div class="carousel-caption">
+                            <h5>Web Development</h5>
+                            <p>Custom solutions for your online presence</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'user/images/about.jpg' %}" class="d-block w-100" alt="Mobile Apps">
+                        <div class="carousel-caption">
+                            <h5>Mobile Applications</h5>
+                            <p>Native and cross-platform mobile solutions</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'user/images/about.jpg' %}" class="d-block w-100 " alt="Cloud Solutions">
+                        <div class="carousel-caption">
+                            <h5>Cloud Solutions</h5>
+                            <p>Scalable cloud infrastructure and services</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#serviceCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#serviceCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+ -->
+<!-- Fix 4: Use only Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <div class="container-fluid footer">
+     <a class="navbar-brand " href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" class="mb-5" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+
+        <div class="row">
+            <div class="col-md">
+                <h4 class="text-center">CONTACT US</h4>
+                <h6 class="text-center mb-2">+91 99999999999</h6>
+                <h6 class="text-center">rahulboga62@gmail.com</h6>
+            </div>
+        </div>
+        <hr class="w-50 mx-auto">
+        
+        <div class="row">
+            <div class="col-md text-center">
+                <div class="social-icons-container">
+                    <a href="https://www.instagram.com/boga._19/" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-facebook"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-x-twitter"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>  
+        </div>
+               <p class=" text-center mt-5">© 2025 CoderHub. All rights reserved.</p>
+    </div>
+
+
+
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarCollapse = document.getElementById('navbarNav');
+
+    // Toggle menu-open class on navbar when mobile menu is toggled
+    navbarCollapse.addEventListener('show.bs.collapse', function() {
+        navbar.classList.add('menu-open');
+    });
+
+    navbarCollapse.addEventListener('hide.bs.collapse', function() {
+        navbar.classList.remove('menu-open');
+        // Update scrolled class after closing menu
+        updateNavbar();
+    });
+
+    function updateNavbar() {
+        if (window.scrollY > 0) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Initial check
+    updateNavbar();
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateNavbar);
+});
+</script>
+
+  
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+
+</html>

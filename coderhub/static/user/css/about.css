@@ -1,0 +1,355 @@
+
+    .t1{
+        color: black;
+        text-align: justify;
+
+
+
+    }
+.y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+       background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.l1 {
+    background-color: #fac564 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem !important;
+
+
+}
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+
+    margin-top: 10px;
+}
+
+/* Existing scroll styles */
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Ensure menu stays black when both scrolled and open */
+.navbar.scrolled.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+
+
+
+
+    
+ 
+
+
+
+
+    /* Navbar styling */
+   .navbar {
+    background-color: transparent !important;
+    transition: background-color 0.5s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+
+
+
+
+
+    /* Optional: You can set a border, if needed */
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+
+ 
+
+}
+
+
+
+
+
+  
+
+
+/* Ensure rows have consistent height */
+.m1 {
+    background-color: #fac564;
+    margin: 2rem 0;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+
+ 
+
+}
+
+
+
+
+/* Optional: You can set a border, if needed */
+
+ 
+/* Full-screen background image */
+
+
+
+
+
+
+
+ 
+
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+
+
+/* Optional: You can set a border, if needed */
+
+ 
+
+/* Full-screen background image */
+
+
+/* Navbar styling */
+
+
+.fi{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px auto;
+}
+
+   .footer {
+        background-color: #000000 !important; /* Black background */
+        min-height: 15vh;
+        padding: 2rem 0;
+        overflow: hidden;
+    }
+
+
+    .social-icons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .social-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3); /* Silver shadow */
+    }
+
+    .social-icon i {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+    }
+
+    .social-icon:hover i {
+        color: #fff;
+    }
+
+    /* Specific icon hover colors */
+    .social-icon:hover:nth-child(1) { background-color: #E1306C; } /* Instagram */
+    .social-icon:hover:nth-child(2) { background-color: #1877F2; } /* Facebook */
+    .social-icon:hover:nth-child(3) { background-color: #000000; } /* Twitter/X */
+    .social-icon:hover:nth-child(4) { background-color: #333333; } /* GitHub */
+
+    .footer h4, .footer h6 {
+        color: white !important;
+    }
+
+    .footer hr {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+
+
+.q1 {
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+
+/* Text content styling */
+.m1 .t1 {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Button styling */
+.m1 .btn {
+    margin-top: 1rem;
+    max-width: 200px;
+    margin: 0px 25px;
+}
+
+/* For the special container with fixed height */
+.container.bg-light.mb-5  {
+    height: 300px; /* Match your explicit height */
+    object-fit: cover;
+}
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+    margin-top: 10px;
+}
+
+/* Existing scroll styles */
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Ensure menu stays black when both scrolled and open */
+.navbar.scrolled.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+   .navbar {
+    background-color: #fac564;
+
+        transition: background-color 0.5s ease-in-out;
+    }
+    .navbar.scrolled {
+           background-color: #fac564;
+
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .nav-item {
+        font-size: 20px;
+    }
+    /* Remove conflicting flex properties */
+
+
+/* Responsive adjustments */
+
+
+
+
+.code {
+    padding: 0 !important; /* Remove padding from column */
+    overflow: hidden; /* Ensure no overflow */
+}
+
+.code img {
+    width: 100%;
+    height: 100%; /* Fill column height */
+    object-fit: cover; /* Maintain aspect ratio while filling space */
+    margin: 0 !important; /* Remove any margins */
+    display: block; /* Remove inline spacing */
+}
+
+/* Add height to rows for consistency */
+.m1 {
+    min-height: 400px; /* Set minimum row height */
+}
+
+
+
+/* Remove any conflicting padding/margins */
+.code {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+

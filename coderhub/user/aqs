@@ -1,0 +1,2135 @@
+forms.py
+from django import forms
+from .models import UserProfile, SolutionRequest
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from PIL import Image as PILImage
+import io
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django import forms
+from .models import Project
+from .models import Feedback
+from django import forms
+from .models import Project
+from .models import User  # Assuming 'User' is defined in your models.py
+
+from .models import ContactSubmission
+
+from django import forms
+from .models import PasswordResetOTP
+
+class OTPRequestForm(forms.Form):
+    email = forms.EmailField(
+    label='Email',
+    widget=forms.EmailInput(attrs={'placeholder': 'Enter your registered email'})
+)
+    
+class OTPVerifyForm(forms.Form):
+    otp = forms.CharField(
+        label='OTP',
+        widget=forms.TextInput(attrs={'placeholder': 'Enter 6-digit OTP'}),
+        max_length=6,
+        min_length=6
+    )
+
+class PasswordResetForm(forms.Form):
+    new_password = forms.CharField(
+        label='New Password',
+        widget=forms.PasswordInput
+    )
+    confirm_password = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput
+    )
+
+
+
+
+
+
+
+# forms.py
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactSubmission
+        fields = ['name', 'email', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'subject': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+# forms.py
+class NewsletterForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter your email',
+            'class': 'form-control'
+        })
+    )
+
+class AdminUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff']
+        widgets = {
+            'email': forms.EmailInput(attrs={'required': True}),
+        }
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['image']
+
+class SolutionRequestForm(forms.ModelForm):
+    error_photo = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+        help_text="Upload high-quality PNG (recommended) or JPG (min 800px width)",
+        label="Error Screenshot"
+    )
+
+    class Meta:
+        model = SolutionRequest
+        fields = ['subject', 'description', 'error_photo']
+        widgets = {
+            'description': forms.Textarea(attrs={
+                'placeholder': 'Describe your issue in detail...',
+                'rows': 4
+            }),
+            'subject': forms.TextInput(attrs={
+                'placeholder': 'Enter a brief title for your issue',
+                'class': 'form-control-lg'
+            }),
+        }
+        labels = {
+            'subject': 'Issue Title',
+            'description': 'Detailed Description'
+        }
+        help_texts = {
+            'subject': 'Keep it concise (50-60 characters)',
+            'description': 'Include error messages, line numbers, and what you\'ve tried'
+        }
+
+    def clean_error_photo(self):
+        photo = self.cleaned_data.get('error_photo')
+        
+        if photo:
+            try:
+                img = PILImage.open(photo)
+                
+                # Maintain original format if PNG
+                if photo.content_type == 'image/png':
+                    return photo  # Return original PNG without modification
+
+                # For JPEG images, ensure quality preservation
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Prevent upscaling and maintain aspect ratio
+                if img.width < 800:
+                    raise ValidationError("Image width should be at least 800 pixels for readability")
+
+                # Save with quality parameters
+                img_io = io.BytesIO()
+                img.save(
+                    img_io,
+                    format='JPEG',
+                    quality=95,  # Increased from default 75
+                    optimize=True,
+                    subsampling=0  # Keep maximum chroma resolution
+                )
+                img_io.seek(0)
+
+                return InMemoryUploadedFile(
+                    img_io,
+                    None,
+                    photo.name,
+                    'image/jpeg',
+                    img_io.getbuffer().nbytes,
+                    None
+                )
+
+            except Exception as e:
+                raise ValidationError(f"Image processing error: {str(e)}")
+        
+        return photo
+
+    def clean_subject(self):
+        subject = self.cleaned_data.get('subject')
+        if len(subject) > 100:
+            raise ValidationError("Subject too long (max 100 characters)")
+        return subject
+
+# user/forms.py
+
+
+class ProjectUploadForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['title', 'technology', 'file']
+        widgets = {
+            'file': forms.FileInput(attrs={'accept': '.zip'})
+        }
+
+
+# forms.py
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['rating', 'message']  # Removed 'created_at'
+        widgets = {
+            'rating': forms.RadioSelect(choices=[(i, '★' * i) for i in range(1, 6)]),
+            'message': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Your feedback...'}),
+        }
+
+views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib import messages
+from .models import UserProfile, SolutionRequest, Message, Conversation
+from .forms import ProfileUpdateForm, SolutionRequestForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
+from .forms import FeedbackForm
+from .models import Feedback
+from django.utils import timezone
+# Add this to your imports in views.py
+from .models import Feedback
+from django.db.models import Count, Q, Max
+from .models import Project 
+from django.shortcuts import get_object_or_404
+# Add at the top with other imports
+from .forms import ProjectUploadForm
+from django.db import IntegrityError
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib import messages
+    # Add to existing imports
+from .models import Quiz
+from django.contrib.auth.decorators import user_passes_test
+from .forms import AdminUserForm
+from .models import Subscriber
+from .forms import NewsletterForm
+from .forms import ContactForm
+from .models import ContactSubmission
+from django.http import JsonResponse
+from .models import ContactSubmission
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+
+    # views.py
+from .forms import ContactForm
+from .models import ContactSubmission
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
+from .models import Project  # Assuming Project model is created
+from django.shortcuts import render
+
+from django.http import FileResponse
+import os
+from django.template import Template, Context
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
+
+from django.shortcuts import render, get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Quiz, QuizSubmission
+
+from django.http import HttpResponse, FileResponse
+import os
+
+
+
+from django.template import RequestContext  # Add this import
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+from .models import PasswordResetOTP
+from .forms import OTPRequestForm, OTPVerifyForm, PasswordResetForm
+
+def send_otp(request):
+    if request.method == 'POST':
+        form = OTPRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                user = User.objects.get(email=email)
+                # Generate 6-digit OTP
+                otp = str(random.randint(100000, 999999))
+                
+                # Create or update OTP
+                PasswordResetOTP.objects.filter(user=user).update(is_used=True)
+                PasswordResetOTP.objects.create(user=user, otp=otp)
+                
+                # Send email
+                send_mail(
+                    'Password Reset OTP',
+                    f'Your OTP for password reset is: {otp}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                request.session['reset_email'] = email
+                return redirect('verify_otp')
+            except User.DoesNotExist:
+                form.add_error('email', 'Email not found')
+    else:
+        form = OTPRequestForm()
+    return render(request, 'user/otp_request.html', {'form': form})
+
+
+
+def verify_otp(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('password_reset')
+
+    user = get_object_or_404(User, email=email)
+    form = OTPVerifyForm()
+
+    if request.method == 'POST':
+        form = OTPVerifyForm(request.POST)
+        if form.is_valid():
+            otp_entered = form.cleaned_data['otp']
+            otp_record = PasswordResetOTP.objects.filter(
+                user=user,
+                otp=otp_entered,
+                is_used=False
+            ).first()
+
+            if otp_record and otp_record.is_valid():
+                return redirect('reset_password')
+            else:
+                messages.error(request, 'Invalid or expired OTP')
+        else:
+            messages.error(request, 'Please enter a valid 6-digit OTP')
+
+    return render(request, 'user/verify_otp.html', {'form': form})
+
+
+
+
+def reset_password(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('password_reset')
+    
+    user = get_object_or_404(User, email=email)
+    
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['new_password'] == form.cleaned_data['confirm_password']:
+                # Check OTP validity
+                otp_record = PasswordResetOTP.objects.filter(
+                    user=user,
+                    is_used=False
+                ).order_by('-created_at').first()
+                
+                if otp_record and otp_record.is_valid():
+                    user.set_password(form.cleaned_data['new_password'])
+                    user.save()
+                    otp_record.is_used = True
+                    otp_record.save()
+                    messages.success(request, 'Password reset successfully! Please login.')
+                    return redirect('login')
+                else:
+                    messages.error(request, 'Invalid or expired OTP')
+            else:
+                messages.error(request, 'Passwords do not match')
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'user/reset_password.html', {'form': form})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to keep user logged in
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    
+    return render(request, 'user/change_password.html', {
+        'form': form
+    })
+
+
+def quiz_submissions(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    submissions = QuizSubmission.objects.filter(quiz=quiz)
+    return render(request, 'user/quiz_submissions.html', {
+        'quiz': quiz,
+        'submissions': submissions
+    })
+
+
+def admin_quizzes(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        quiz_file = request.FILES.get('quiz_file')
+        Quiz.objects.create(title=title, file=quiz_file)
+        return redirect('admin_quizzes')
+    
+    quizzes = Quiz.objects.all()
+    return render(request, 'user/admin_quizzes.html', {'quizzes': quizzes})
+
+
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib import messages
+
+def take_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        messages.warning(request, "You need to login to take the quiz")
+        return redirect('login')
+    
+    # Check previous submissions
+    previous_submission = QuizSubmission.objects.filter(
+        user=request.user, 
+        quiz=quiz
+    ).order_by('-submitted_at').first()
+
+    # Submission validation logic
+    if previous_submission:
+        if previous_submission.passed:
+            messages.error(request, "You've already passed this quiz and cannot take it again.")
+            return redirect('quiz')
+        else:
+            # Calculate if 15 days have passed since last attempt
+            retake_date = previous_submission.submitted_at + timedelta(days=15)
+            if timezone.now() < retake_date:
+                messages.error(request, 
+                    f"You can retake this quiz after {retake_date.strftime('%Y-%m-%d')}. "
+                    "Minimum 15 days required between failed attempts.")
+                return redirect('quiz')
+
+    # Handle quiz submission
+    if request.method == 'POST':
+        score = calculate_score(request.POST)
+        passed = score >= 22  # Passing threshold
+
+        # Create new submission
+        QuizSubmission.objects.create(
+            user=request.user,
+            quiz=quiz,
+            score=score,
+            passed=passed
+        )
+
+        # Update user profile stats
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        if passed:
+            profile.wins += 1
+            messages.success(request, "Congratulations! You've passed the quiz!")
+        else:
+            profile.losses += 1
+            messages.warning(request, "Quiz attempt failed. You can try again after 15 days.")
+        profile.save()
+
+        return render(request, 'user/quiz_result.html', {
+            'score': score,
+            'passed': passed,
+            'show_reward': passed,
+            'quiz': quiz,
+            'retake_date': timezone.now() + timedelta(days=15) if not passed else None
+        })
+
+    # Handle GET request - show quiz
+    try:
+        with open(quiz.file.path, 'r') as f:
+            template_content = f.read()
+    except FileNotFoundError:
+        messages.error(request, "Quiz file not found")
+        return redirect('quiz')
+
+    template = Template(template_content)
+    context = RequestContext(request, {
+        'quiz': quiz,
+        'terms_conditions': True,  # Flag to show terms in template
+        'last_attempt': previous_submission.submitted_at if previous_submission else None,
+        'retake_available': previous_submission and (timezone.now() >= retake_date) if previous_submission else False
+    })
+    
+    rendered_content = template.render(context)
+    return HttpResponse(rendered_content)
+
+
+
+      
+ANSWER_KEY = {
+    'q1': 'b',
+    'q2': 'a',
+    'q3': 'a',
+    'q4': 'a',
+    'q5': 'b',
+    'q6': 'b',
+    'q7': 'b',
+    'q8': 'a',
+    'q9': 'b',
+    'q10': 'c',
+    'q11': 'b',
+    'q12': 'a',
+    'q13': 'a',
+    'q14': 'a',
+    'q15': 'a',
+    'q16': 'a',
+    'q17': 'c',
+    'q18': 'b',
+    'q19': 'b',
+    'q20': 'a',
+    'q21': 'a',
+    'q22': 'a',
+    'q23': 'a',
+    'q24': 'b',
+    'q25': 'b',
+    'q26': 'a',
+    'q27': 'a',
+    'q28': 'a',
+    'q29': 'a',
+    'q30': 'a',
+}
+
+def calculate_score(user_answers):
+    score = 0
+    for question, correct_answer in ANSWER_KEY.items():
+        if user_answers.get(question) == correct_answer:
+            score += 1
+    return score
+
+def project_page(request):
+    return render(request, 'project.html')  # Ensure 'project.html' exists in templates
+# views.py (project_list view)
+def project_list(request):
+    projects = Project.objects.all()
+    return render(request, 'user/project.html', {'projects': projects})  # Adjusted path
+
+
+
+@login_required
+def upload_project(request):
+    if request.method == "POST":
+        form = ProjectUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.user = request.user
+            project.save()
+            messages.success(request, "Project uploaded successfully!")
+            return redirect("projects")  # Updated to match the URL pattern name
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ProjectUploadForm()
+    
+    return render(request, "user/upload_project.html", {"form": form})
+
+
+
+def mark_as_read(request, solution_id):
+    if request.method == 'POST':
+        Message.objects.filter(
+            conversation__solution_request_id=solution_id,
+            recipient=request.user,
+            is_read=False
+        ).update(is_read=True)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+
+@login_required
+def view_messages(request):
+    conversations = Conversation.objects.filter(
+        Q(solution_request__user=request.user) |
+        Q(participant=request.user)
+    ).annotate(
+        last_message=Max('messages__timestamp'),
+        unread_count=Count('messages', filter=Q(messages__recipient=request.user) & Q(messages__is_read=False))
+    ).order_by('-last_message')
+
+    return render(request, 'user/messages.html', {'conversations': conversations})
+@login_required
+def delete_solution(request, solution_id):
+    solution = get_object_or_404(SolutionRequest, id=solution_id)
+    if solution.user != request.user:
+        messages.error(request, "You don't have permission to delete this request.")
+        return redirect('home')
+    
+    if request.method == 'POST':
+        solution.delete()
+        messages.success(request, "Solution request deleted successfully!")
+        return redirect('profile')
+    
+    return render(request, 'user/confirm_delete.html', {'solution': solution})
+
+
+# views.py
+
+
+from .forms import FeedbackForm
+from .models import Feedback
+def home(request):
+    solutions = SolutionRequest.objects.all().order_by('-created_at')
+    newsletter_form = NewsletterForm()
+    feedback_form = FeedbackForm()
+    has_submitted = False
+
+    if request.user.is_authenticated:
+        has_submitted = Feedback.objects.filter(user=request.user).exists()
+
+    if request.method == 'POST':
+        # Handle feedback submission
+        if 'rating' in request.POST:
+            if not request.user.is_authenticated:
+                messages.warning(request, 'Please login to submit feedback')
+                return redirect('login')
+                
+            feedback_form = FeedbackForm(request.POST)
+            if feedback_form.is_valid():
+                feedback = feedback_form.save(commit=False)
+                feedback.user = request.user
+                feedback.save()
+                messages.success(request, 'Thank you for your feedback!')
+                return redirect('home')
+            else:
+                messages.error(request, 'Please correct the errors below')
+
+    context = {
+        'solutions': solutions,
+        'newsletter_form': newsletter_form,
+        'feedback_form': feedback_form,
+        'has_submitted': has_submitted,
+    }
+    return render(request, 'user/home.html', context)
+
+
+
+
+def user_login(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(request, username=user_obj.username, password=password)
+
+            if user is not None:
+                auth_login(request, user)
+                messages.success(request, 'Login Successfully!!!')
+
+                return redirect('profile')
+
+
+            else:
+                messages.error(request, 'Wrong Password')
+        except User.DoesNotExist:
+            messages.error(request, 'Email does not exist')
+
+    return render(request, 'user/login.html')
+
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('home')
+
+
+def about(request):
+    profile = None
+    if request.user.is_authenticated:
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+        except UserProfile.DoesNotExist:
+            profile = None
+
+    return render(request, 'user/about.html', {
+        'user': request.user,
+        'profile': profile,
+    })
+
+def quiz(request):
+    quizzes = Quiz.objects.all()
+    enhanced_quizzes = []
+    
+    for quiz in quizzes:
+        quiz_data = {
+            'quiz': quiz,
+            'submission': None,
+            'can_retake': False,
+        }
+        
+        if request.user.is_authenticated:
+            # Get user's latest submission for this quiz
+            submission = QuizSubmission.objects.filter(
+                user=request.user,
+                quiz=quiz
+            ).order_by('-submitted_at').first()
+            
+            if submission:
+                quiz_data['submission'] = submission
+                if not submission.passed:
+                    retake_date = submission.submitted_at + timedelta(days=15)
+                    quiz_data['can_retake'] = timezone.now() >= retake_date
+        
+        enhanced_quizzes.append(quiz_data)
+    
+    return render(request, 'user/quiz.html', {'quizzes': enhanced_quizzes})
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username is already taken by another user.')
+            return redirect('signup')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already registered. Please login.')
+            return redirect('login')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        messages.success(request, 'Your account has been created! You can now log in.')
+        return redirect('login')
+
+    return render(request, 'user/signup.html')
+
+def service(request):
+    return render(request, 'user/service.html')
+
+@login_required
+def solution(request):
+    if request.method == 'POST':
+        form = SolutionRequestForm(request.POST, request.FILES)
+        if form.is_valid():
+            solution_request = form.save(commit=False)
+            solution_request.user = request.user
+            solution_request.save()
+            messages.success(request, 'Your solution request has been submitted!')
+            return redirect('home')
+    else:
+        form = SolutionRequestForm()
+    
+    return render(request, 'user/solution.html', {'form': form})
+
+def project(request):
+    return render(request, 'user/project.html')
+
+@login_required
+def profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    unread_count = Message.objects.filter(recipient=request.user, is_read=False).count()
+
+    if request.method == 'POST':
+        if 'remove_image' in request.POST:
+            user_profile.image.delete(save=False)
+            user_profile.image = None
+            user_profile.save()
+            messages.success(request, 'Profile photo removed successfully!')
+            return redirect('profile')
+        
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile')
+    else:
+        form = ProfileUpdateForm(instance=user_profile)
+
+    return render(request, 'user/profile.html', {
+        'user': request.user,
+        'profile': user_profile,
+        'form': form,
+        'unread_count': unread_count
+    })
+
+
+@login_required
+def chat(request, conversation_id):
+    conversation = get_object_or_404(
+        Conversation,
+        Q(id=conversation_id) &
+        (Q(solution_request__user=request.user) | Q(participant=request.user))
+    )
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            # Determine recipient
+            if request.user == conversation.solution_request.user:
+                recipient = conversation.participant
+            else:
+                recipient = conversation.solution_request.user
+            
+            Message.objects.create(
+                conversation=conversation,
+                sender=request.user,
+                recipient=recipient,
+                content=content
+            )
+            return redirect('chat', conversation_id=conversation_id)
+
+    messages = conversation.messages.all().order_by('timestamp')
+    
+    # Mark received messages as read
+    messages.filter(recipient=request.user, is_read=False).update(is_read=True)
+
+    return render(request, 'user/chat.html', {
+        'conversation': conversation,
+        'messages': messages,
+        'solution_request': conversation.solution_request
+    })
+    
+ 
+
+
+@login_required
+def delete_solution(request, solution_id):
+    solution = get_object_or_404(SolutionRequest, id=solution_id, user=request.user)
+    
+    if request.method == 'POST':
+        solution.delete()
+        messages.success(request, 'Solution request deleted successfully.')
+        return redirect('home')
+
+    return render(request, 'user/confirm_delete.html', {'solution': solution})
+
+
+@login_required
+def start_conversation(request, solution_id):
+    solution_request = get_object_or_404(SolutionRequest, id=solution_id)
+    
+    # Create or get conversation
+    conversation, created = Conversation.objects.get_or_create(
+        solution_request=solution_request,
+        participant=request.user
+    )
+    
+    return redirect('chat', conversation_id=conversation.id)
+
+
+
+@login_required
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    
+    if request.method == 'POST':
+        project.delete()
+        messages.success(request, "Project deleted successfully!")
+        return redirect('profile')
+    
+    return redirect('profile')
+
+def is_admin(user):
+    return user.is_authenticated and (user.email == "rahulboga62@gmail.com" or user.is_superuser)
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_panel(request):
+    user_count = User.objects.count()
+    context = {
+        'user_count': user_count,
+        'active_users': User.objects.filter(is_active=True).count(),
+        'projects_count': Project.objects.count()
+    }
+    return render(request, 'user/admin_panel.html', context)
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = AdminUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User {user.username} updated successfully!')
+            return redirect('admin_panel')
+    else:
+        form = AdminUserForm(instance=user)
+    return render(request, 'user/admin_edit_user.html', {'form': form, 'user': user})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, f'User {user.username} deleted successfully!')
+        return redirect('admin_panel')
+    return render(request, 'user/admin_confirm_delete.html', {'user': user})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_users(request):
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'user/admin_users.html', {'users': users})
+
+
+
+# views.py
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_subscribers(request):
+    subscribers = Subscriber.objects.all().order_by('-date_subscribed')
+    return render(request, 'user/admin_subscribers.html', {'subscribers': subscribers})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_delete_subscriber(request, subscriber_id):
+    subscriber = get_object_or_404(Subscriber, id=subscriber_id)
+    if request.method == 'POST':
+        subscriber.delete()
+        messages.success(request, 'Subscriber deleted successfully')
+        return redirect('admin_subscribers')
+    return render(request, 'user/admin_confirm_delete_subscriber.html', {'subscriber': subscriber})
+
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('contact')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'user/contact.html', {'form': form})
+
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_view_submission(request, submission_id):
+    submission = get_object_or_404(ContactSubmission, id=submission_id)
+    return render(request, 'user/admin_view_submission.html', {'submission': submission})
+# views.py
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_contact_submissions(request):
+    submissions = ContactSubmission.objects.all().order_by('-submitted_at')
+    return render(request, 'user/admin_contact_submissions.html', {'submissions': submissions})
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_delete_submission(request, submission_id):
+    submission = get_object_or_404(ContactSubmission, id=submission_id)
+    if request.method == 'POST':
+        submission.delete()
+        messages.success(request, 'Submission deleted successfully')
+        return redirect('admin_contact_submissions')
+    return render(request, 'user/admin_confirm_delete_submission.html', {'submission': submission})
+
+
+def project_list(request):
+    projects = Project.objects.all()
+    search_query = request.GET.get('q', '')
+    
+    if search_query:
+        projects = projects.filter(title__icontains=search_query)
+    
+    return render(request, 'user/project.html', {'projects': projects})
+
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    user_projects = Project.objects.filter(user=user)
+    
+    context = {
+        'profile_user': user,
+        'user_projects': user_projects
+    }
+    return render(request, 'user/user_profile.html', context)
+
+
+# Add with other imports
+
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def delete_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    if request.method == 'POST':
+        quiz.delete()
+        messages.success(request, 'Quiz deleted successfully!')
+        return redirect('admin_quizzes')
+    return redirect('admin_quizzes')
+
+
+
+
+
+
+from django.shortcuts import render
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_feedback(request):
+    # Implement the logic to fetch user feedback
+    feedbacks = Feedback.objects.all()  # or however you store it
+    return render(request, 'user/admin_feedback.html', {'feedbacks': feedbacks})
+
+
+
+
+@login_required
+@user_passes_test(is_admin, login_url='home')
+def admin_delete_feedback(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    if request.method == 'POST':
+        feedback.delete()
+        messages.success(request, 'Feedback deleted successfully!')
+        return redirect('admin_feedback')
+    return render(request, 'user/admin_confirm_delete_feedback.html', {'feedback': feedback})
+
+home.html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<STYLE>
+
+
+
+
+
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+
+
+/* Optional: You can set a border, if needed */
+
+    body {
+    background-color: rgb(255, 255, 165);
+}
+
+
+/* Full-screen background image */
+.y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+       background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.a1 {
+    background: url('{% static "user/images/home_service_bg.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: black;
+    padding-top: 60px;
+    background-color: rgb(43, 46, 53);
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: transparent !important;
+    transition: background-color 0.5s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+
+
+/*Content to make scrolling effect */
+.content {
+    height: 200vh;
+    padding-top: 50px;
+    text-align: center;
+    color: black;
+}
+
+.y1 h1,
+.y1 h4 {
+    font-weight: bold;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.v1 {
+    border-radius: 20px;
+    width: 200px;
+    height: 60px;
+    color: white;
+    border-color: white;
+}
+
+.a1,
+h3 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.a1,
+p {
+    text-align: justify;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 50px;
+    line-height: 35px;
+    word-spacing: 5px;
+}
+
+/* Default text color */
+.z1 h3,
+.z2 h3,
+.z3 h3 {
+    color: black; /* Ensures text is visible on default */
+    transition: color 0.5s ease-in-out;
+}
+
+/* Ensure text remains visible on hover */
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white !important; /* Makes text visible on green background */
+}
+
+/* Default styling */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: white; /* Default white background */
+    transition: color 0.5s ease-in-out; /* Smooth text color transition */
+}
+
+/* Background animation using ::before */
+.z1::before,
+.z2::before,
+.z3::before {
+    content: "";
+    position: absolute;
+    bottom: -100%; /* Start from below */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #68cf68; /* Soft Green */
+    transition: bottom 0.5s ease-in-out;
+    z-index: -1; /* Ensure it's behind the text */
+
+}
+
+/* Hover effect - background moves from bottom to top */
+.z1:hover::before,
+.z2:hover::before,
+.z3:hover::before {
+    bottom: 0; /* Move up to cover the element */
+        color: black;
+}
+
+/* Ensure text remains visible */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    z-index: 1;
+}
+
+/* Optional: Text color change on hover */
+.z1:hover,
+.z2:hover,
+.z3:hover {
+    color: white; /* Change text color */
+}
+
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white; /* Set a visible color for the text */
+}
+
+   .footer {
+        background-color: #000000 !important; /* Black background */
+        min-height: 15vh;
+        padding: 2rem 0;
+        overflow: hidden;
+    }
+
+
+    .social-icons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .social-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3); /* Silver shadow */
+    }
+
+    .social-icon i {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+    }
+
+    .social-icon:hover i {
+        color: #fff;
+    }
+
+    /* Specific icon hover colors */
+    .social-icon:hover:nth-child(1) { background-color: #E1306C; } /* Instagram */
+    .social-icon:hover:nth-child(2) { background-color: #1877F2; } /* Facebook */
+    .social-icon:hover:nth-child(3) { background-color: #000000; } /* Twitter/X */
+    .social-icon:hover:nth-child(4) { background-color: #333333; } /* GitHub */
+
+    .footer h4, .footer h6 {
+        color: white !important;
+    }
+
+    .footer hr {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+.g1 {
+    background-color: white;
+}
+
+
+
+
+
+
+/* Add to your existing CSS */
+.image-hover-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-hover-container:hover {
+    transform: scale(1.03);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-hover-container:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Fullscreen Image Modal Styling */
+.modal-content {
+    background: transparent !important;
+    border: none !important;
+    height: 100vh;
+    width: 100vw;
+}
+
+.modal-body {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+
+
+
+/* Add this CSS to your existing styles */
+.modal-dialog.custom-modal {
+    max-width: 800px;
+    margin: 1.75rem auto;
+}
+
+.modal-image {
+    max-width: 100%;
+    max-height: 800px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .modal-dialog.custom-modal {
+        max-width: 95%;
+        margin: 10px auto;
+    }
+    .modal-image {
+        max-height: 90vh;
+    }
+}
+
+.close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 10px 15px;
+}
+
+
+
+
+
+
+
+
+</STYLE>
+</head>
+
+<script>
+  
+function showFullImage(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    // Clear previous image
+    modalImage.src = '';
+    // Set new image source directly
+    modalImage.src = imageUrl;
+    
+    // Optional: Add loading state
+    modalImage.onload = function() {
+        URL.revokeObjectURL(this.src);
+    };
+}
+
+
+
+// Optional: Handle image quality
+document.querySelectorAll('.image-hover-container img').forEach(img => {
+    img.style.imageRendering = 'high-quality';
+    img.loading = 'eager'; // Prioritize loading
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    
+    function updateNavbar() {
+        if (window.scrollY > 0) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Initial check
+    updateNavbar();
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateNavbar);
+});
+</script>
+
+
+<body>
+
+<!-- Fullscreen Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog custom-modal modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <button type="button" class="btn close-button" data-bs-dismiss="modal">
+                    <i class="fas fa-times fa-2x"></i>
+                </button>
+                <div class="d-flex justify-content-center align-items-center">
+                    <img id="modalImage" class="modal-image" src="" alt="Fullscreen Error Image">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <div class="container ">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="mx-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'service' %}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                    </li>
+                </ul>
+            </div>
+     <ul class="navbar-nav d-flex align-items-center">
+    <li class="nav-item dropdown">
+        {% if user.is_authenticated %}
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+               id="userDropdown" role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false">
+                {% if profile.image %}
+                    <img src="{{ profile.image.url }}" 
+                         alt="Profile Picture" 
+                         class="default-icon me-2">
+                {% else %}
+                    <div class="default-icon me-2">
+                        <i class="fa-solid fa-user text-light fs-4"></i>
+                    </div>
+                {% endif %}
+                <span class="email-display fs-6">{{ user.email }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" 
+                aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">
+                    <i class="fa-regular fa-user me-2"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'change_password' %}">
+                    <i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+            </ul>
+        {% else %}
+            <li class="nav-item">
+                <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+            </li>
+        {% endif %}
+    </li>
+</ul>
+        </div>
+    </div>
+</nav>
+    <!-- Background Section with Centered Text -->
+   <div class="container-fluid y1  "  style="background: url('{% static 'user/images/pro.jpg' %}') no-repeat center center fixed; background-size: cover;">
+        <h1 class="display ">Welcome To Coder's Hub</h1>
+        <h4 class="ml-">"Code , Learn , Innovate !"</h4>
+        <a href="{% url 'projects' %}"><button class="btn btn-primary v1 fs-5 mt-5">Explore Projects</button></a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Add this section after the newsletter section -->
+<div class="container mt-5">
+       {% if solutions.count == 0 %}
+        <div class="alert alert-info text-center">
+            No requests made by any users.
+        </div>
+    {% else %}
+    <h3 class="text-center text-dark mb-4">Recent Solution Requests</h3>
+  {% for solution in solutions %}
+    <div class="card mb-3">
+        <div class="row g-0">
+           <!-- Modify the image section in home.html -->
+<!-- In home.html, modify this section -->
+<div class="col-md-4 position-relative p-0">
+    <div class="image-hover-container" 
+         data-bs-toggle="modal" 
+         data-bs-target="#imageModal" 
+         onclick="showFullImage('{{ solution.error_photo.url }}')">
+        <img src="{{ solution.error_photo.url }}" 
+             class="img-fluid rounded-start" 
+             alt="Error Photo"
+             style="width: 100%; height: 300px; object-fit: cover; image-rendering: crisp-edges;">
+        <div class="image-overlay">
+            <span class="badge bg-dark">Click to View Full Screen</span>
+        </div>
+    </div>
+</div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ solution.subject }}</h5>
+                   <div class="table-responsive">
+                       <table> <tr><td><p class="card-text">{{ solution.description }}</p></td></tr></table>
+                   </div>
+                    <div class="d-flex align-items-center">
+                     {% if solution.user.userprofile.image %}
+    <img src="{{ solution.user.userprofile.image.url }}" 
+         class="rounded-circle me-2" 
+         style="width: 40px; height: 40px; object-fit: cover;" 
+         alt="User Image">
+{% else %}
+    <div class="rounded-circle me-2 default-icon">
+        <i class="fa-regular fa-user text-light fs-4"></i>
+    </div>
+{% endif %}
+                        <span>{{ solution.user.email }}</span>
+                      <!-- Ensure user can't send messages to 
+<!-- In home.html where you show solutions -->
+<!-- In your solution display loop -->
+{% if solution.user != user and user.is_authenticated %}
+<!-- Change the message button to -->
+<a href="{% url 'start_conversation' solution.id %}" class="btn btn-primary">
+    <i class="fas fa-comment"></i> Message
+</a>
+{% endif %}
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endif %}
+</div>
+
+<!-- Add this to your service.html template -->
+
+
+   <div class="container a1 p-5" style="background: url('{% static 'use/images/home_service_bg.png' %}') no-repeat center center fixed; background-size: cover;">
+    <div class="row">
+        <div class="col">
+            <h2 class="mb-5 text-center tex">Our Services</h2>
+        </div>
+    </div>
+        
+    <div class="row ">
+        <div class="col-md border m-1 shadow-lg z1 text-center" onclick="location.href='{% url 'projects' %}';">
+            <h3>Get Free Project</h3>
+            <p>One of the best ways to learn programming is through real-world projects. At Coder's Hub, we provide free, high-quality coding projects that help users understand different programming concepts and frameworks. Whether you are a beginner looking for simple projects or an advanced developer exploring complex applications, our project repository offers something for everyone.</p>
+        </div>
+        <div class="col-md border z2 m-1 shadow-lg text-center" onclick="location.href='{% url 'solution' %}';">
+            <h3>Get Solution</h3>
+            <p>Stuck on a programming problem? At Coder's Hub, we understand that debugging and troubleshooting can be frustrating. That's why we offer a smart problem-solving service, where users can upload a screenshot or photo of their coding issue and get an expert solution quickly.</p>
+        </div>
+        <div class="col-md border z3 m-1 shadow-lg text-center" onclick="location.href='{% url 'quiz' %}';">
+            <h3>Win Quiz</h3>
+            <p>Test Your Skills, Learn & Get Rewarded! At Coder's Hub, we believe that learning should be fun and rewarding. Our interactive coding quizzes help you test your programming knowledge while giving you the chance to win exciting redeem codes.</p>
+        </div>
+    </div>
+</div>
+<!-- home.html -->
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for message in messages %}
+    <div class="toast align-items-center text-white bg-{{ message.tags }} border-0" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1050;">
+        <div class="toast-body">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+  
+
+<script>
+    // Initialize toasts
+document.addEventListener('DOMContentLoaded', function() {
+    var toasts = [].slice.call(document.querySelectorAll('.toast'))
+    toasts.forEach(function(toastEl) {
+        new bootstrap.Toast(toastEl, {autohide: true, delay: 3000}).show()
+    })
+})
+</script>
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Submit Feedback</h4>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        {% if has_submitted %}
+                            <div class="alert alert-info">
+                                You've already submitted feedback. Thank you!
+                            </div>
+                        {% else %}
+ <!-- Replace the existing feedback form section with -->
+<form method="post">
+    {% csrf_token %}
+    
+    {% if feedback_form.errors %}
+    <div class="alert alert-danger">
+        {% for error in feedback_form.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
+        {% for field in feedback_form %}
+            {% for error in field.errors %}
+                <strong>{{ field.label }}:</strong> {{ error }}<br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Rating Field -->
+    <div class="mb-4">
+        <label class="form-label">Rating:</label>
+        <div class="star-rating">
+            {{ feedback_form.rating }}
+        </div>
+    </div>
+
+    <!-- Message Field -->
+    <div class="mb-3">
+        {{ feedback_form.message.label_tag }}
+        {{ feedback_form.message }}
+    </div>
+
+    <button type="submit" class="btn btn-primary" name="submit_feedback">
+        <i class="fas fa-paper-plane me-2"></i>Submit Feedback
+    </button>
+</form>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Please <a href="{% url 'login' %}">login</a> to submit feedback.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        font-size: 2rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+    .star-rating input:checked + label {
+        color: #ffc107;
+    }
+</style>
+
+   <!-- home.html -->
+<div class="container mt-5 text-center">
+    <h3 class="text-dark">Join Our Newsletter</h3>
+    <p class="text-center">Get notified about new projects, quizzes, and updates</p>
+    
+    <div class="d-flex mb-5 justify-content-center">
+        <form method="post" class="input-group w-50">
+            {% csrf_token %}
+            {{ newsletter_form.email }}
+            <button type="submit" name="newsletter_email" class="btn btn-success">Subscribe</button>
+        </form>
+    </div>
+</div>
+
+
+   
+
+<div class="container-fluid footer">
+    <div class="row mb-4">
+        <div class="col-md text-center">
+            <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo" style="width:20%;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <h4 class="text-center">CONTACT US</h4>
+            <h6 class="text-center mb-2">+91 8000054541</h6>
+            <h6 class="text-center">rahulboga62@gmail.com</h6>
+        </div>
+    </div>
+    <hr class="w-50 mx-auto">
+    
+    <div class="row">
+        <div class="col-md text-center">
+            <div class="social-icons-container">
+                <a href="https://www.instagram.com/boga._19/" class="ts" target="_blank">
+                    <div class="social-icon">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                </a>
+                <a href="#" class="ts" target="_blank">
+                    <div class="social-icon">
+                        <i class="fa-brands fa-square-facebook"></i>
+                    </div>
+                </a>
+                <a href="#" class="ts" target="_blank">
+                    <div class="social-icon">
+                        <i class="fa-brands fa-square-x-twitter"></i>
+                    </div>
+                </a>
+                <a href="#" class="ts" target="_blank">
+                    <div class="social-icon">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const rating = document.querySelector('input[name="rating"]:checked');
+    if (!rating) {
+        alert('Please select a rating!');
+        e.preventDefault();
+    }
+});
+</script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+models.py
+from django.db import models
+from django.contrib.auth.models import User
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+ # Ensure this line is present
+
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+from django.db import models
+from django.contrib.auth.models import User
+import uuid
+from django.utils import timezone
+
+from datetime import datetime
+
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+
+from django.db import models
+from django.contrib.auth.models import User
+import uuid
+from django.utils import timezone
+
+class PasswordResetOTP(models.Model):  # ✅ This is your custom model
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_valid(self):
+        return not self.is_used and (timezone.now() - self.created_at).total_seconds() < 900
+
+
+class Quiz(models.Model):
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to='quizzes/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_marks = models.IntegerField(default=30)
+
+class QuizSubmission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    score = models.IntegerField()
+    passed = models.BooleanField(default=False)  # Add this field
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+# models.py
+class ContactSubmission(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.subject}"
+
+
+
+# models.py
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    date_subscribed = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+
+
+class Project(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    technology = models.CharField(max_length=255)
+    file = models.FileField(upload_to="projects/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+
+    class Meta:
+        db_table="Projects"
+
+
+
+
+
+
+class SolutionRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=200)
+    description = models.TextField()
+    error_photo = models.ImageField(upload_to='error_photos/')  # Original image only
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+    def __str__(self):
+        return f"Request by {self.user.username}"
+
+class Conversation(models.Model):
+    solution_request = models.ForeignKey(SolutionRequest, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Convo about {self.solution_request.subject}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    wins = models.PositiveIntegerField(default=0)  # Add this
+    losses = models.PositiveIntegerField(default=0)  # Add this
+    # ... other fields
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+class Message(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Message from {self.sender} to {self.recipient}"
+
+
+
+# models.py
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+errorr 
+
+
+
+
+
+Microsoft Windows [Version 10.0.26100.3775]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub>python manage.py runserevr
+Unknown command: 'runserevr'. Did you mean runserver?
+Type 'manage.py help' for usage.
+
+C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub>python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 3 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): user.
+Run 'python manage.py migrate' to apply them.
+April 23, 2025 - 18:09:20
+Django version 4.2, using settings 'coderhub.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+
+C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub>python manage.py migrate
+System check identified some issues:
+
+WARNINGS:
+?: (mysql.W002) MariaDB Strict Mode is not set for database connection 'default'
+        HINT: MariaDB's Strict Mode fixes many data integrity problems in MariaDB, such as data truncation upon insertion, by escalating warnings into errors. It is strongly recommended you activate it. See: https://docs.djangoproject.com/en/4.2/ref/databases/#mysql-sql-mode
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, user
+Running migrations:
+  Applying user.0030_feedback_created_at_alter_feedback_user...Traceback (most recent call last):
+  File "C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub\manage.py", line 22, in <module>
+    main()
+  File "C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub\manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 412, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 458, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 106, in wrapper
+    res = handle_func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\commands\migrate.py", line 356, in handle
+    post_migrate_state = executor.migrate(
+                         ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 135, in migrate
+    state = self._migrate_all_forwards(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 167, in _migrate_all_forwards
+    state = self.apply_migration(
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 252, in apply_migration
+    state = migration.apply(state, schema_editor)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\migration.py", line 132, in apply
+    operation.database_forwards(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\operations\fields.py", line 108, in database_forwards
+    schema_editor.add_field(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\mysql\schema.py", line 107, in add_field
+    super().add_field(model, field)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 668, in add_field
+    definition, params = self.column_sql(model, field, include_default=True)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 359, in column_sql
+    " ".join(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 310, in _iter_column_sql
+    default_value = self.effective_default(field)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 429, in effective_default
+    return field.get_db_prep_save(self._effective_default(field), self.connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 954, in get_db_prep_save
+    return self.get_db_prep_value(value, connection=connection, prepared=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1607, in get_db_prep_value
+    value = self.get_prep_value(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1585, in get_prep_value
+    value = super().get_prep_value(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1464, in get_prep_value
+    return self.to_python(value)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1546, in to_python
+    parsed = parse_datetime(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\dateparse.py", line 114, in parse_datetime
+    return datetime.datetime.fromisoformat(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: fromisoformat: argument must be strcrosoft Windows [Version 10.0.26100.3775]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, user
+Running migrations:
+  Applying user.0030_feedback_created_at_alter_feedback_user...Traceback (most recent call last):
+  File "C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub\manage.py", line 22, in <module>
+    main()
+  File "C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub\manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 412, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 458, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\base.py", line 106, in wrapper
+    res = handle_func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\management\commands\migrate.py", line 356, in handle
+    post_migrate_state = executor.migrate(
+                         ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 135, in migrate
+    state = self._migrate_all_forwards(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 167, in _migrate_all_forwards
+    state = self.apply_migration(
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\executor.py", line 252, in apply_migration
+    state = migration.apply(state, schema_editor)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\migration.py", line 132, in apply
+    operation.database_forwards(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\migrations\operations\fields.py", line 108, in database_forwards
+    schema_editor.add_field(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\mysql\schema.py", line 107, in add_field
+    super().add_field(model, field)
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 668, in add_field
+    definition, params = self.column_sql(model, field, include_default=True)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 359, in column_sql
+    " ".join(
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 310, in _iter_column_sql
+    default_value = self.effective_default(field)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\schema.py", line 429, in effective_default
+    return field.get_db_prep_save(self._effective_default(field), self.connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 954, in get_db_prep_save
+    return self.get_db_prep_value(value, connection=connection, prepared=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1607, in get_db_prep_value
+    value = self.get_prep_value(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1585, in get_prep_value
+    value = super().get_prep_value(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1464, in get_prep_value
+    return self.to_python(value)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\__init__.py", line 1546, in to_python
+    parsed = parse_datetime(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\dateparse.py", line 114, in parse_datetime
+    return datetime.datetime.fromisoformat(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: fromisoformat: argument must be str
+
+C:\Users\HP\OneDrive\Documents\Desktop\myproject\coderhub>

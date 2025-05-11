@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'user/css/about.css' %}">
+
+
+</head>
+<style>
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+
+ 
+
+}
+
+</style>
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbar = document.querySelector('.navbar');
+        
+        function updateNavbar() {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Initial check
+        updateNavbar();
+        
+        // Update on scroll
+        window.addEventListener('scroll', updateNavbar);
+    });
+    </script>
+
+<script>
+  
+function showFullImage(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    // Clear previous image
+    modalImage.src = '';
+    // Set new image source directly
+    modalImage.src = imageUrl;
+    
+    // Optional: Add loading state
+    modalImage.onload = function() {
+        URL.revokeObjectURL(this.src);
+    };
+}
+
+
+
+// Optional: Handle image quality
+document.querySelectorAll('.image-hover-container img').forEach(img => {
+    img.style.imageRendering = 'high-quality';
+    img.loading = 'eager'; // Prioritize loading
+});
+</script>
+
+
+ 
+<body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+        <div class="container ">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link " href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active"  href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'service' %}">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                        </li>
+                    </ul>
+                </div>
+         <ul class="navbar-nav d-flex align-items-center">
+        <li class="nav-item dropdown">
+            {% if user.is_authenticated %}
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                   id="userDropdown" role="button" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" 
+                             alt="Profile Picture" 
+                             class="default-icon me-2">
+                    {% else %}
+                        <div class="default-icon me-2">
+                            <i class="fa-solid fa-user text-light fs-5"></i>
+                        </div>
+                    {% endif %}
+                    <span class="email-display fs-6">{{ user.email }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" 
+                    aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                        <i class="fa-regular fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'change_password' %}">
+                        <i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                </ul>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+            {% endif %}
+        </li>
+    </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Background Section with Centered Text -->
+        <!-- Background Section with Centered Text -->
+       <div class="container-fluid y1  "  style="background: url('{% static 'user/images/pipipi.jpg' %}') no-repeat center center fixed; background-size: cover;" loading="lazy">
+         <h1 class="display ">ABOUT US  </h1>
+
+        </div>
+
+
+
+
+<div class="container my-5 text-center text-light">
+
+
+
+
+<div class="row m1">
+        <div class="col-md-6 code ">     <img src="{% static 'user/images/freeprojectsss.png' %}" loading="lazy" alt="">
+
+        </div>
+
+        <div class="col-md-6 code1 mt-3">
+  <h4 class="mt-2 t1">Get Free Project</h4>
+        <p class="t1">One of the best ways to learn programming is through real-world projects. At Coder's Hub, we provide free, high-quality coding projects that help users understand different programming concepts and frameworks. Whether you are a beginner looking for simple projects or an advanced developer exploring complex applications, our project repository offers something for everyone.</p>
+        <div class="d-flex justify-content-center justify-content-lg-start">
+            <a class="btn btn-outline-dark mb-5 me-2 border border-dark text-light bg-dark rounded-5" 
+               href="{% url 'projects' %}">Download Projects</a>
+        </div> 
+    </div>
+     </div>
+
+</div>
+
+
+
+     <div class="container my-5   text-center text-light">
+
+<div class="row m1">
+     
+        <div class="col-md-6  order-xl-1 order-lg-1 order-md-1 order-sm-2 order-2 code1 mt-3">
+       <h4 class="t1">Solving Problem's Using Chat</h4>
+        <p class="t1">At Coder Hub, your ultimate platform for coding support and project assistance! If you have any queries related to your project, simply upload your issue along with a screenshot, and our community of developers will help you find a solution. Through interactive message conversations. Join us today and make coding easier with collaborative problem-solving!</p>
+       <div class="d-flex justify-content-center justify-content-lg-start">
+            <a class="btn btn-outline-dark mb-5 me-2 border border-dark text-light bg-dark rounded-5" 
+               href="{% url 'solution' %}">solution</a>
+        </div>
+
+ </div>
+           <div class="col-md-6  order-xl-2  order-lg-2 order-md-2 order-sm-1  order-1 code">    <img src="{% static 'user/images/solution.png' %}" alt="" loading="lazy" class="quiz-image"></div>
+
+
+</div></div>
+
+
+<div class="container my-5 text-center text-light">
+
+<div class="row m1">
+     <div class="col-md-6 code ">      
+          <img src="{% static 'user/images/quizabout.png' %}" alt="" loading="lazy" class="">
+        </div>
+
+        <div class="col-md-6 code1 mt-3">
+  <h4 class="t1">The Ultimate Quiz Platform for Coders!</h4>
+        <p class="t1">At Coder Hub, we believe that learning should be both fun and rewarding! Our platform offers a dynamic and engaging way to test your coding knowledge through interactive quizzes. Whether you're a beginner or an experienced programmer, Coder Hub challenges you with thought-provoking questions across various programming languages and topics. The best part? You earn exciting rewards, including redeem codes, as you progress and showcase your skills. Join us today, level up your coding expertise, and get rewarded for your knowledge! 🚀💡</p>
+        <div class="d-flex justify-content-center justify-content-lg-start">
+            <a class="btn btn-outline-light mb-5 border border-dark text-light bg-dark rounded-5" 
+               href="{% url 'quiz' %}">Participate</a>
+        </div>
+    </div>
+ 
+
+
+</div>
+
+</div>
+
+
+
+
+
+   <div class="container-fluid my-5 "  style="background: url('{% static 'user/images/chooseimg.png' %}') no-repeat center center fixed; background-size: cover;" loading="lazy">
+<div class="row">
+    <div class="col" style=" min-height: 250px;">
+        <h1 class="my-2">Why Choose Us ?</h1>
+        <p class=" my-5 text-" style="text-align:justify;">At Coder Hub, we are dedicated to making coding accessible, engaging, and rewarding for everyone. Whether you're a beginner or an experienced developer, we provide the perfect platform to enhance your skills. Get access to free coding projects that help you build real-world applications, gain hands-on experience, and strengthen your understanding of various programming frameworks. Stuck on a problem? No worries! Our interactive chat support allows you to share your queries with a vibrant community of developers who are ready to assist you with practical solutions. And to make learning even more exciting, we offer fun and rewarding coding quizzes that test your knowledge and let you earn redeemable rewards. Join Coder Hub today and take your coding journey to the next level! 🚀</p>
+        
+    </div>
+</div>
+ 
+    
+</div>
+
+
+
+
+
+
+    <div class="container-fluid footer">
+        <a class="navbar-brand " href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" class="mb-5" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+
+        <div class="row">
+            <div class="col-md">
+                <h4 class="text-center">CONTACT US</h4>
+                <h6 class="text-center mb-2">+91 99999999999</h6>
+                <h6 class="text-center">rahulboga62@gmail.com</h6>
+            </div>
+        </div>
+        <hr class="w-50 mx-auto">
+        
+        <div class="row">
+            <div class="col-md text-center">
+                <div class="social-icons-container">
+                    <a href="https://www.instagram.com/boga._19/" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-facebook"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-x-twitter"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>  
+        </div>
+               <p class=" text-center mt-5">© 2025 CoderHub. All rights reserved.</p>
+    </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarCollapse = document.getElementById('navbarNav');
+
+    // Toggle menu-open class on navbar when mobile menu is toggled
+    navbarCollapse.addEventListener('show.bs.collapse', function() {
+        navbar.classList.add('menu-open');
+    });
+
+    navbarCollapse.addEventListener('hide.bs.collapse', function() {
+        navbar.classList.remove('menu-open');
+        // Update scrolled class after closing menu
+        updateNavbar();
+    });
+
+    function updateNavbar() {
+        if (window.scrollY > 0) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Initial check
+    updateNavbar();
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateNavbar);
+});
+</script>
+
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

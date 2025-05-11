@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>user profile</title>
+</head>
+<link rel="stylesheet" href="{% static 'user/css/bootstrap.css' %}">4
+<style type="text/css">
+           .username-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+        .username-link:hover {
+            color: black;
+            text-decoration: none   ;
+        }
+    .n1{
+
+        margin-top: 100px;
+    }
+    .navbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <div class="container ">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo">
+        </a>
+     
+    </div>
+</nav>
+  
+
+    <div class="container n1">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        {% if profile_user.userprofile.image %}
+                        <img src="{{ profile_user.userprofile.image.url }}" 
+                             class="rounded-circle mb-3" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'user/images/default_avatar.png' %}" 
+                             class="rounded-circle mb-3" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                        {% endif %}
+                        <h3>{{ profile_user.username }}</h3>
+                        <p class="text-muted">Member since {{ profile_user.date_joined|date:"F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <h4>Projects by {{ profile_user.username }}</h4>
+                <div class="row">
+                    {% for project in user_projects %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">{{ project.description|truncatechars:100 }}</p>
+                                <a href="{{ project.file.url }}" class="btn btn-primary" download>
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Uploaded {{ project.uploaded_at|timesince }} ago
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted">No projects uploaded yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

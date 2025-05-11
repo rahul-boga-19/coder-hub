@@ -1,0 +1,555 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<STYLE>
+    /* Full-screen background image */
+.y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+       background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+
+    .terms-conditions {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+.terms-conditions h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+.terms-conditions li {
+    padding: 0.5rem 0;
+    color: #34495e;
+}
+.terms-conditions li:before {
+    content: "•";
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+  
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Maintain equal dimensions for a circle */
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;/* Fallback background color */
+    overflow: hidden; /* Ensure overflow is hidden */
+    border: 1px solid white;
+}
+
+
+
+
+/* Optional: You can set a border, if needed */
+
+
+
+/* Full-screen background image */
+
+
+/* Navbar styling */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+/*Content to make scrolling effect */
+
+}
+
+
+
+    
+
+
+
+
+
+
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: transparent !important;
+    transition: background-color 0.5s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+
+
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+
+    margin-top: 10px;
+}
+
+/* Existing scroll styles */
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Ensure menu stays black when both scrolled and open */
+.navbar.scrolled.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+
+
+
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+
+    margin-top: 10px;
+}
+
+/* Existing scroll styles */
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Ensure menu stays black when both scrolled and open */
+.navbar.scrolled.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+
+
+
+
+
+
+    /* Navbar styling */
+   .navbar {
+    background-color: transparent !important;
+    transition: background-color 0.5s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+  }
+
+.nav-item {
+    font-size: 20px;
+}
+
+
+
+
+   .footer {
+        background-color: #000000 !important; /* Black background */
+        min-height: 15vh;
+        padding: 2rem 0;
+        overflow: hidden;
+    }
+
+
+    .social-icons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .social-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3); /* Silver shadow */
+    }
+
+    .social-icon i {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+    }
+
+    .social-icon:hover i {
+        color: #fff;
+    }
+
+    /* Specific icon hover colors */
+    .social-icon:hover:nth-child(1) { background-color: #E1306C; } /* Instagram */
+    .social-icon:hover:nth-child(2) { background-color: #1877F2; } /* Facebook */
+    .social-icon:hover:nth-child(3) { background-color: #000000; } /* Twitter/X */
+    .social-icon:hover:nth-child(4) { background-color: #333333; } /* GitHub */
+
+    .footer h4, .footer h6 {
+        color: white !important;
+    }
+
+    .footer hr {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+
+ 
+
+}
+
+
+</STYLE>
+</head>
+
+ 
+<body>
+
+
+
+    <!-- Fullscreen Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog custom-modal modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <button type="button" class="btn close-button" data-bs-dismiss="modal">
+                        <i class="fas fa-times fa-2x"></i>
+                    </button>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img id="modalImage" class="modal-image" src="" alt="Fullscreen Error Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+        <div class="container ">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link " href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'service' %}">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'quiz' %}">Quiz</a>
+                        </li>
+                    </ul>
+                </div>
+         <ul class="navbar-nav d-flex align-items-center">
+        <li class="nav-item dropdown">
+            {% if user.is_authenticated %}
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                   id="userDropdown" role="button" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" 
+                             alt="Profile Picture" 
+                             class="default-icon me-2">
+                    {% else %}
+                        <div class="default-icon me-2">
+                            <i class="fa-solid fa-user text-light fs-5"></i>
+                        </div>
+                    {% endif %}
+                    <span class="email-display fs-6">{{ user.email }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" 
+                    aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                        <i class="fa-regular fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'change_password' %}">
+                        <i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                </ul>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+            {% endif %}
+        </li>
+    </ul>
+            </div>
+        </div>
+    </nav>
+        <!-- Background Section with Centered Text -->
+     <!-- Background Section with Centered Text -->
+        <!-- Background Section with Centered Text -->
+       <div class="container-fluid y1  "  style="background: url('{% static 'user/images/quiza.jpg' %}') no-repeat center center fixed; background-size: cover;" loading="lazy">
+         <h1 class="display "> QUIZ  </h1>
+
+        </div>
+
+
+    <!-- Background Section with Centered Text -->
+<div class="container mt-5 pt-5">
+    <h2 class="text-center mb-4">Available Quizzes</h2>
+    <div class="row">
+        {% for quiz_data in quizzes %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ quiz_data.quiz.title }}</h5>
+                    <p class="card-text">Total Marks: {{ quiz_data.quiz.total_marks }}</p>
+                    
+                    {% if user.is_authenticated %}
+                        {% if quiz_data.submission %}
+                            {% if quiz_data.submission.passed %}
+                                <div class="alert alert-success">✅ You've passed this quiz!</div>
+                            {% else %}
+                                {% if quiz_data.can_retake %}
+                                    <a href="{% url 'take_quiz' quiz_data.quiz.id %}" class="btn btn-primary">Retake Quiz</a>
+                                {% else %}
+                                    <div class="alert alert-warning">
+                                        ⏳ Next attempt available: {{ quiz_data.submission.submitted_at|add_days:15|date:"N j, Y" }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'take_quiz' quiz_data.quiz.id %}" class="btn btn-primary">Start Quiz</a>
+                        {% endif %}
+                    {% else %}
+                        <button class="btn btn-secondary" disabled>Login to Start</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Terms & Conditions Section -->
+
+    
+ 
+
+<div class="terms-conditions mt-5 p-4 border-top">
+    <h4>Terms & Conditions</h4>
+    <ul class="list-unstyled">
+        <li>✅ Each user is allowed only one attempt to pass this quiz</li>
+        <li>⏳ If you fail, you can retake the quiz after 15 days</li>
+        <li>🏆 Successful attempts cannot be retaken</li>
+        <li>📝 All answers are final once submitted</li>
+        <li>🕒 The quiz must be completed within the time limit</li>
+    </ul>
+    <div class="alert alert-warning mt-3">
+        <strong>Note:</strong> Any attempt to circumvent these rules will result in permanent ban from all quizzes.
+    </div>
+</div>
+
+       
+
+    <div class="container-fluid footer">
+    
+
+   <a class="navbar-brand " href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" class="mb-5" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+
+        <div class="row">
+            <div class="col-md">
+                <h4 class="text-center">CONTACT US</h4>
+                <h6 class="text-center mb-2">+91 99999999999</h6>
+                <h6 class="text-center">rahulboga62@gmail.com</h6>
+            </div>
+        </div>
+        <hr class="w-50 mx-auto">
+        
+        <div class="row">
+            <div class="col-md text-center">
+                <div class="social-icons-container">
+                    <a href="https://www.instagram.com/boga._19/" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-facebook"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-square-x-twitter"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="ts" target="_blank">
+                        <div class="social-icon">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>  
+        </div>
+               <p class=" text-center mt-5">© 2025 CoderHub. All rights reserved.</p>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarCollapse = document.getElementById('navbarNav');
+
+    // Toggle menu-open class on navbar when mobile menu is toggled
+    navbarCollapse.addEventListener('show.bs.collapse', function() {
+        navbar.classList.add('menu-open');
+    });
+
+    navbarCollapse.addEventListener('hide.bs.collapse', function() {
+        navbar.classList.remove('menu-open');
+        // Update scrolled class after closing menu
+        updateNavbar();
+    });
+
+    function updateNavbar() {
+        if (window.scrollY > 0) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Initial check
+    updateNavbar();
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateNavbar);
+});
+</script>
+
+
+
+ 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+

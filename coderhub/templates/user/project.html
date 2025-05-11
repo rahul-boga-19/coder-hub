@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'user/css/bootstrap.css' %}">
+</head>
+<style>
+       .username-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+        .username-link:hover {
+            color: black;
+            text-decoration: none   ;
+        }
+    .n1{
+
+        margin-top: 100px;
+    }
+    .navbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+</style>
+<body>
+
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <div class="container ">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo">
+        </a>
+     
+    </div>
+</nav>
+
+<div class="container n1">
+    <h4 class="text-center">Free Projects</h4>
+        <form method="GET" class="mb-4">
+        <div class="input-group">
+            <input type="text" 
+                   class="form-control" 
+                   placeholder="Search by project title" 
+                   name="q"
+                   value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </form>
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                                   <a href="{% url 'user_profile' username=project.user.username %}" class="username-link">
+                   {% if project.user.userprofile.image %}
+                        <img src="{{ project.user.userprofile.image.url }}" 
+                             class="rounded-circle me-2 " 
+                             style="width: 40px; height: 40px; object-fit: cover;">
+                        {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 40px; height: 40px;">
+                            <img src="{% static 'user/images/default_avatar.png' %}"  width="40px" height="40px" alt="">
+                        </div>
+                        {% endif %}
+                        <span>{{ project.user.username }}</span>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text mb-5">
+                        <strong>Technology:</strong> {{ project.technology }}
+                    </p>
+                    <a href="{{ project.file.url }}" class="btn btn-primary" download>
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    Uploaded {{ project.uploaded_at|timesince }} ago
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	
+
+{% if other_user.userprofile.image %}
+<img src="{{ other_user.userprofile.image.url }}" 
+     class="rounded-circle me-3" 
+     style="width: 50px; height: 50px;  border-radius: 50%; object-fit: cover;" 
+     alt="Profile Picture">
+{% else %}
+ <div class="rounded-circle me-2 default-icon">
+       <img src="{% static  'user/images/default_avatar.png' %}"      class="rounded-circle me-3" 
+     style="width: 50px; height: 50px;  border-radius: 50%; object-fit: cover;"  alt="">
+    </div>
+{% endif %}
+<div class="flex-grow-1">
+    <h5>{{ other_user.email }}</h5>
+    <p class="mb-0">Regarding: {{ conversation.solution_request.subject }}</p>
+    <small class="text-muted">
+        Last activity: {{ conversation.last_message|date:"d M Y H:i" }}
+    </small>
+</div>
+</body>
+</html>

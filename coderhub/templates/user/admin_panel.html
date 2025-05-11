@@ -1,0 +1,41 @@
+   {% extends 'user/base_admin.html' %}
+
+{% block content %}
+
+
+ <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              <h2>Dashboard</h2>
+                           </div>
+                        </div>
+                     </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-users"></i> Users</h5>
+                    <h2>{{ user_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa fa-users"></i> Active Users</h5>
+                    <h2>{{ active_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Projects</h5>
+                    <h2>{{ projects_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

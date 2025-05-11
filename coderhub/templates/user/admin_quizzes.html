@@ -1,0 +1,73 @@
+{% extends 'user/base_admin.html' %}
+{% block content %}
+
+
+
+ <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              <h2>Manage Quizzes</h2>
+                           </div>
+                        </div>
+                     </div>
+    
+    <!-- Upload Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Upload New Quiz</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Quiz Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Quiz HTML File</label>
+                    <input type="file" name="quiz_file" class="form-control" accept=".html" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Quiz</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Existing Quizzes -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Existing Quizzes</h4>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Submissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in quizzes %}
+                    <tr>
+                        <td>{{ quiz.title }}</td>
+                        <td>{{ quiz.quizsubmission_set.count }}</td>
+                      <td>
+    <a href="{% url 'quiz_submissions' quiz.id %}" class="btn  btn-sm btn-info">
+        View Submissions
+    </a>
+    <form method="post" action="{% url 'delete_quiz' quiz.id %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger" 
+                onclick="return confirm('Are you sure you want to delete this quiz?')">
+            Delete
+        </button>
+    </form>
+</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

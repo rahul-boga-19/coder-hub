@@ -1,0 +1,515 @@
+
+.v2{
+    background-color: fac564;
+    
+
+}
+
+.code{
+          background-color: #fac564;
+
+ 
+
+
+ts
+}
+.cf{
+
+    
+
+
+          background-color: fac564;
+
+ 
+
+
+
+}
+
+
+.code img{
+  
+
+    justify-content: center;
+        align-items: center;
+        height: 150px;
+
+
+  margin: 10px;
+
+}
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.feedback-card .form-control {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.feedback-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.feedback-card .btn-outline-dark {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.feedback-card .btn-outline-dark:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+
+
+     .star-rating {
+        display: flex;
+        gap: 5px;
+        flex-direction: row;
+    }
+    .star-label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #ddd;
+        transition: color 0.2s;
+        position: relative;
+    }
+    .star-label input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .star-label:hover,
+    .star-label input:checked ~ .star-label,
+    .star-label input:checked ~ .star-label ~ .star-label {
+        color: #ffc107;
+    }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+        .star-rating input:checked + label {
+            color: #ffc107;
+        }
+
+
+.feedback-card {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.3) !important; /* Semi-transparent dark background */
+    backdrop-filter: blur(5px); /* Adds subtle blur effect */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Light border */
+    color: white !important; /* White text */
+}
+    .star-rating-container {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+
+
+    }
+    .message-field {
+        width: 80%;
+        margin: 0 auto;
+
+  
+    }
+    .message-field textarea {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+        width: 100%;
+        margin: 0 auto;
+        display: block;
+    }
+    .submit-button-container {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+
+
+/* Optional: You can set a border, if needed */
+
+ 
+
+/* Full-screen background image */
+.y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+       background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.a1 {
+    background: url('{% static "user/images/home_service_bg.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: black;
+    padding-top: 60px;
+
+
+
+
+
+
+    background-color: rgb(43, 46, 53);
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: transparent !important;
+    transition: background-color 0.5s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+
+
+/*Content to make scrolling effect */
+.content {
+    height: 200vh;
+    padding-top: 50px;
+    text-align: center;
+    color: black;
+}
+
+.y1 h1,
+.y1 h4 {
+    font-weight: bold;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.a1,
+h3 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.a1,
+p {
+    text-align: justify;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 50px;
+    line-height: 35px;
+    word-spacing: 5px;
+}
+
+/* Default text color */
+.z1 h3,
+.z2 h3,
+.z3 h3 {
+    color: black; /* Ensures text is visible on default */
+    transition: color 0.5s ease-in-out;
+}
+
+/* Ensure text remains visible on hover */
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white !important; /* Makes text visible on green background */
+}
+
+/* Default styling */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: white; /* Default white background */
+    transition: color 0.5s ease-in-out; /* Smooth text color transition */
+ 
+
+
+}
+
+.fi{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+/* Background animation using ::before */
+.z1::before,
+.z2::before,
+.z3::before {
+    content: "";
+    position: absolute;
+    bottom: -100%; /* Start from below */
+    left: 0;
+    width: 100%;
+    height: 100%;
+      background: #fac564;
+    transition: bottom 0.5s ease-in-out;
+    z-index: -1; /* Ensure it's behind the text */
+
+
+}
+
+/* Hover effect - background moves from bottom to top */
+.z1:hover::before,
+.z2:hover::before,
+.z3:hover::before {
+    bottom: 0; /* Move up to cover the element */
+        color: black;
+}
+
+/* Ensure text remains visible */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    z-index: 1;
+}
+
+/* Optional: Text color change on hover */
+.z1:hover,
+.z2:hover,
+.z3:hover {
+    color: white; /* Change text color */
+}
+
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white; /* Set a visible color for the text */
+}
+
+   .footer {
+        background-color: #000000 !important; /* Black background */
+        min-height: 15vh;
+        padding: 2rem 0;
+        overflow: hidden;
+    }
+
+
+    .social-icons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .social-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3); /* Silver shadow */
+    }
+
+    .social-icon i {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+    }
+
+    .social-icon:hover i {
+        color: #fff;
+    }
+
+    /* Specific icon hover colors */
+    .social-icon:hover:nth-child(1) { background-color: #E1306C; } /* Instagram */
+    .social-icon:hover:nth-child(2) { background-color: #1877F2; } /* Facebook */
+    .social-icon:hover:nth-child(3) { background-color: #000000; } /* Twitter/X */
+    .social-icon:hover:nth-child(4) { background-color: #333333; } /* GitHub */
+
+    .footer h4, .footer h6 {
+        color: white !important;
+    }
+
+    .footer hr {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+.g1 {
+    background-color: white;
+}
+
+
+
+
+
+
+/* Add to your existing CSS */
+.image-hover-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-hover-container:hover {
+    transform: scale(1.03);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-hover-container:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Fullscreen Image Modal Styling */
+.modal-content {
+    background: transparent !important;
+    border: none !important;
+    height: 100vh;
+    width: 100vw;
+}
+
+.modal-body {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+
+
+
+/* Add this CSS to your existing styles */
+.modal-dialog.custom-modal {
+    max-width: 800px;
+    margin: 1.75rem auto;
+}
+
+.modal-image {
+    max-width: 100%;
+    max-height: 800px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .modal-dialog.custom-modal {
+        max-width: 95%;
+        margin: 10px auto;
+    }
+    .modal-image {
+        max-height: 90vh;
+    }
+}
+
+.close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 10px 15px;
+}
+
+
+
+
+
+
+
+
+/* Newsletter Responsive Styles */
+#id_email {
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+

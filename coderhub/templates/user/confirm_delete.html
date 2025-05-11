@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'user/css/bootstrap.css' %}">
+</head>
+<body>
+	
+	<!-- templates/user/confirm_delete.html -->
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h4>Confirm Delete</h4>
+            <p>Are you sure you want to delete "{{ solution.subject }}"?</p>
+            <form method="POST" action="{% url 'delete_solution' solution.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

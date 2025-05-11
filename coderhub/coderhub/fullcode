@@ -1,0 +1,807 @@
+from django.db import models
+from django.contrib.auth.models import User
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+ # Ensure this line is present
+
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+class SolutionRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=200)
+    description = models.TextField()
+    error_photo = models.ImageField(upload_to='error_photos/')  # Original image only
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+    def __str__(self):
+        return f"Request by {self.user.username}"
+
+class Conversation(models.Model):
+    solution_request = models.ForeignKey(SolutionRequest, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Convo about {self.solution_request.subject}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+class Message(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Message from {self.sender} to {self.recipient}"
+
+
+
+
+        sol.
+        {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Solution - Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .solution-container {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            display: none;
+            margin-top: 15px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .info-section {
+            border-left: 3px solid #007bff;
+            padding-left: 25px;
+        }
+        .upload-container {
+            border: 2px dashed #ced4da;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (same as home.html) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <!-- Your existing navbar code here -->
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Left Column - Solution Form -->
+            <div class="col-lg-7">
+                <div class="solution-container p-4">
+                    <h2 class="mb-4 text-center">Submit Your Coding Issue</h2>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Subject Field -->
+                        <div class="mb-4">
+                            <label for="id_subject" class="form-label">Issue Title</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.subject.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label">Detailed Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.description.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Error Photo Upload -->
+                        <div class="mb-4">
+                            <label class="form-label">Upload Error Screenshot</label>4
+
+
+
+                                <div class="alert alert-info mb-3">
+        <i class="fas fa-info-circle me-2"></i>
+        For best results: 
+        <ul class="mb-0">
+            <li>Use PNG format screenshots</li>
+            <li>Ensure text is large enough to read</li>
+            <li>Capture at high resolution</li>
+        </ul>
+    </div>
+                            <div class="upload-container" onclick="document.getElementById('id_error_photo').click()">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Click to upload or drag and drop</p>
+                                <span id="file-name" class="text-muted small"></span>
+                            </div>
+                            {{ form.error_photo }}
+
+
+                            <small class="form-text text-muted">
+    Supported formats: PNG, JPG (recommended minimum size: 800x600px)
+</small>
+                            {% if form.error_photo.errors %}
+                                <div class="text-danger mt-1">
+                                    {{ form.error_photo.errors }}
+                                </div>
+                            {% endif %}
+                  <img id="image-preview" class="image-preview" 
+     style="max-width: 100%; max-height: 500px; object-fit: contain; image-rendering: crisp-edges;">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column - Information Section -->
+            <div class="col-lg-5">
+                <div class="info-section">
+                    <h3 class="mb-4">How It Works</h3>
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-upload fa-2x text-primary me-3"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5>Submit Your Issue</h5>
+                            <p class="text-muted">Describe your coding problem in detail and upload relevant screenshots. The more information you provide, the better we can help!</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users fa-2x text-primary me-3"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5>Community Support</h5>
+                            <p class="text-muted">Our community of experienced developers will review your issue and provide solutions. You'll receive notifications when someone responds.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-comments fa-2x text-primary me-3"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5>Direct Messaging</h5>
+                            <p class="text-muted">Other users can message you directly about your issue. Keep the conversation going until your problem is resolved!</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+                        <h5><i class="fas fa-lightbulb me-2"></i>Pro Tips</h5>
+                        <ul class="mb-0">
+                            <li>Include relevant code snippets in your description</li>
+                            <li>Use clear screenshots of error messages</li>
+                            <li>Describe what you've already tried</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Image Preview Functionality
+        document.getElementById('id_error_photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('image-preview');
+            const fileName = document.getElementById('file-name');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+                fileName.textContent = file.name;
+            } else {
+                preview.style.display = 'none';
+                fileName.textContent = 'No file selected';
+            }
+        });
+
+        // Drag and Drop Handling
+        const dropArea = document.querySelector('.upload-container');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('id_error_photo').files = files;
+            document.getElementById('id_error_photo').dispatchEvent(new Event('change'));
+        }
+    </script>
+</body>
+</html>
+
+home
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coder's Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<STYLE>
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Maintain equal dimensions for a circle */
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;/* Fallback background color */
+    overflow: hidden; /* Ensure overflow is hidden */
+    border: 1px solid white;
+}
+
+
+
+
+/* Optional: You can set a border, if needed */
+
+    body {
+    background-color: rgb(255, 255, 165);
+}
+
+/* Full-screen background image */
+.y1 {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-top: 60px;
+    background-color: rgb(43, 46, 53);
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.navbar-brand img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-item {
+    font-size: 20px;
+}
+
+/*Content to make scrolling effect */
+.content {
+    height: 200vh;
+    padding-top: 50px;
+    text-align: center;
+    color: black;
+}
+
+.y1 h1,
+.y1 h4 {
+    font-weight: bold;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.v1 {
+    border-radius: 20px;
+    width: 200px;
+    height: 60px;
+    color: white;
+    border-color: white;
+}
+
+.a1,
+h3 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.a1,
+p {
+    text-align: justify;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 50px;
+    line-height: 35px;
+    word-spacing: 5px;
+}
+
+/* Default text color */
+.z1 h3,
+.z2 h3,
+.z3 h3 {
+    color: black; /* Ensures text is visible on default */
+    transition: color 0.5s ease-in-out;
+}
+
+/* Ensure text remains visible on hover */
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white !important; /* Makes text visible on green background */
+}
+
+/* Default styling */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: white; /* Default white background */
+    transition: color 0.5s ease-in-out; /* Smooth text color transition */
+}
+
+/* Background animation using ::before */
+.z1::before,
+.z2::before,
+.z3::before {
+    content: "";
+    position: absolute;
+    bottom: -100%; /* Start from below */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #68cf68; /* Soft Green */
+    transition: bottom 0.5s ease-in-out;
+    z-index: -1; /* Ensure it's behind the text */
+}
+
+/* Hover effect - background moves from bottom to top */
+.z1:hover::before,
+.z2:hover::before,
+.z3:hover::before {
+    bottom: 0; /* Move up to cover the element */
+}
+
+/* Ensure text remains visible */
+.z1,
+.z2,
+.z3 {
+    position: relative;
+    z-index: 1;
+}
+
+/* Optional: Text color change on hover */
+.z1:hover,
+.z2:hover,
+.z3:hover {
+    color: white; /* Change text color */
+}
+
+.z1:hover h3,
+.z2:hover h3,
+.z3:hover h3 {
+    color: white; /* Set a visible color for the text */
+}
+
+.footer {
+    min-height: 15vh;
+    background-color: rgb(92, 83, 83);
+}
+
+.footer i {
+    font-size: 45px; /* Increase size */
+    color: white;
+    margin: 20px;
+    cursor: pointer;
+}
+
+.footer,
+h3 {
+    color: white;
+}
+
+.ts {
+    text-decoration-line: none;
+}
+
+.footer img {
+    width: 50%;
+}
+
+.g1 {
+    background-color: white;
+}
+
+
+
+
+
+
+/* Add to your existing CSS */
+.image-hover-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-hover-container:hover {
+    transform: scale(1.03);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-hover-container:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Fullscreen Image Modal Styling */
+.modal-content {
+    background: transparent !important;
+    border: none !important;
+    height: 100vh;
+}
+
+.modal-body {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* In your CSS */
+.modal-image {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    image-rendering: crisp-edges;
+    background: rgba(0,0,0,0.9);
+}
+
+.close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+
+
+
+
+
+
+
+</STYLE>
+</head>
+
+<script>
+  
+function showFullImage(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    // Clear previous image
+    modalImage.src = '';
+    // Set new image source directly
+    modalImage.src = imageUrl;
+    
+    // Optional: Add loading state
+    modalImage.onload = function() {
+        URL.revokeObjectURL(this.src);
+    };
+}
+
+
+
+// Optional: Handle image quality
+document.querySelectorAll('.image-hover-container img').forEach(img => {
+    img.style.imageRendering = 'high-quality';
+    img.loading = 'eager'; // Prioritize loading
+});
+</script>
+
+
+<script>
+
+
+
+
+
+
+    function redirectToService() {
+        window.location.href = "{% url 'service' %}";
+    }
+    </script>
+ 
+<body>
+
+<!-- Fullscreen Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <button type="button" class="btn close-button" data-bs-dismiss="modal">
+                    <i class="fas fa-times fa-2x"></i>
+                </button>
+                <img id="modalImage" class="modal-image" src="" alt="Fullscreen Error Image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <div class="container ">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+            <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="mx-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'service' %}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                    </li>
+                </ul>
+            </div>
+          <ul class="navbar-nav d-flex align-items-center">
+    <li class="nav-item dropdown">
+        {% if user.is_authenticated %}
+            <a class="btn rounded-circle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if profile.image %}
+                    <img src="{{ profile.image.url }}" alt="Profile Picture" class="default-icon">
+                {% else %}
+                    <div class="default-icon">
+                        <i class="fa-regular fa-user text-light fs-4"></i>
+                    </div>
+                {% endif %}
+            </a>
+            <span class="email-display">{{ user.email }}</span> <!-- Display email here -->
+            
+            <ul class="dropdown-menu" aria-labelledby="userDropdown" style="background-color: white; color: black;">
+               
+                <li><a class="dropdown-item" href="{% url 'profile' %}" style="color: black;"><i class="fa-regular fa-user text-dark me-2"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="#" style="color: black;"><i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                 <li><a class="dropdown-item" href="{% url 'logout' %}" style="color: black;"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+            </ul>
+        {% else %}
+            <li class="nav-item">
+                <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+            </li>
+        {% endif %}
+    </li>
+</ul>
+        </div>
+    </div>
+</nav>
+    <!-- Background Section with Centered Text -->
+   <div class="container-fluid y1" style="background: url('{% static 'user/images/bg5.jpg' %}') no-repeat center center fixed; background-size: cover;">
+        <h1 class="display-4 ">Welcome To Coder's Hub</h1>
+        <h4 class="">"Code , Learn , Innovate !"</h4>
+        <a href="{% url 'project' %}"><button class="btn btn-outline-light v1  mt-5">Explore Projects</button></a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Add this section after the newsletter section -->
+<div class="container mt-5">
+    <h3 class="text-center text-dark mb-4">Recent Solution Requests</h3>
+  {% for solution in solutions %}
+    <div class="card mb-3">
+        <div class="row g-0">
+           <!-- Modify the image section in home.html -->
+<!-- In home.html, modify this section -->
+<div class="col-md-4   position-relative">
+    <div class="image-hover-container" 
+         data-bs-toggle="modal" 
+         data-bs-target="#imageModal" 
+         onclick="showFullImage('{{ solution.error_photo.url }}')">  <!-- Changed to error_photo.url -->
+        <!-- In the card image section -->
+<img src="{{ solution.error_photo.url }}" 
+     class="img-fluid rounded-start" 
+     alt="Error Photo"
+     style="max-width: 100%; max-height: 300px; object-fit: contain; image-rendering: crisp-edges;">
+        <div class="image-overlay">
+            <span class="badge bg-dark">Click to View Full Screen</span>
+        </div>
+    </div>
+</div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ solution.subject }}</h5>
+                    <p class="card-text">{{ solution.description }}</p>
+                    <div class="d-flex align-items-center">
+                     {% if solution.user.userprofile.image %}
+    <img src="{{ solution.user.userprofile.image.url }}" 
+         class="rounded-circle me-2" 
+         style="width: 40px; height: 40px; object-fit: cover;" 
+         alt="User Image">
+{% else %}
+    <div class="rounded-circle me-2 default-icon">
+        <i class="fa-regular fa-user text-light fs-4"></i>
+    </div>
+{% endif %}
+                        <span>{{ solution.user.email }}</span>
+                      <!-- Ensure user can't send messages to 
+<!-- In home.html where you show solutions -->
+<!-- In your solution display loop -->
+{% if solution.user != user and user.is_authenticated %}
+<!-- Change the message button to -->
+<a href="{% url 'start_conversation' solution.id %}" class="btn btn-primary">
+    <i class="fas fa-comment"></i> Message
+</a>
+{% endif %}
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+
+    <div class="container a1 p-5">
+        <div class="row">
+            <div class="col">
+                <h2 class="mb-5  text-center">We do offer awesome Services</h2>
+            </div>
+        </div>
+            
+        <div class="row ">
+            <div class="col-md border m-1 shadow-lg  z1 text-center" onclick="redirectToService('service.html')">
+                <h3>Get Free Project</h3>
+                <p>One of the best ways to learn programming is through real-world projects. At Coder's Hub, we provide free, high-quality coding projects that help users understand different programming concepts and frameworks. Whether you are a beginner looking for simple projects or an advanced developer exploring complex applications, our project repository offers something for everyone.</p>
+            </div>
+            <div class="col-md border z2 m-1 shadow-lg text-center" onclick="redirectToService('service.html')">
+                <h3>Get Solution</h3>
+                <p>Stuck on a programming problem? At Coder's Hub, we understand that debugging and troubleshooting can be frustrating. That's why we offer a smart problem-solving service, where users can upload a screenshot or photo of their coding issue and get an expert solution quickly.</p>
+            </div>
+            <div class="col-md border z3 m-1  shadow-lg text-center" onclick="redirectToService('service.html')">
+                <h3>Win Quiz</h3>
+                <p>Test Your Skills, Learn & Get Rewarded! At Coder's Hub, we believe that learning should be fun and rewarding. Our interactive coding quizzes help you test your programming knowledge while giving you the chance to win exciting redeem codes.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5 text-center">
+        <h3 class="text-dark">Join Our Newsletter</h3>
+        <p class="text-center">Please share your email address if you want to receive our new project updates in the future</p>
+    
+        <div class="d-flex  mb-5 justify-content-center">
+            <div class="input-group w-50">
+                <input type="text" class="form-control" placeholder="Enter your email">
+                <button class="btn btn-success">Subscribe</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer">
+        <div class="row">
+            <div class="col-md text-center">
+                <img src="{% static 'user/images/logo.png' %}" alt="Coder's Hub Logo">
+            </div>
+            <div class="col-md text-center">
+                <a href="https://www.instagram.com/boga._19/?next=https%3A%2F%2Fwww.instagram.com%2Fboga._19%2Fsaved%2Fall-posts%2F%3F__coig_login%3D1" class="ts" target="_blank">
+                    <i class="fa-brands fa-instagram"  style="color: #ffffff;"></i>
+                </a>
+                <i class="fa-brands fa-square-facebook" style="color: #ffffff;"></i>
+                <i class="fa-brands fa-square-x-twitter" style="color: #ffffff;"></i>
+                <i class="fa-brands fa-github" style="color: #ffffff;"></i>
+            </div>
+            <div class="col-md">
+                <h4 class="text-center">CONTACT US</h4>
+                <h6 class="text-center ">+91 8000054541</h6>
+                <h6 class="text-center">rahulboga62@gmail.com</h6>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

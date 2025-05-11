@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{%  static 'user/css/bootstrap.css' %}">
+</head>
+<body>
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+    Conversation about: {{ solution_request.subject }}
+</div>
+        <div class="card-body" style="height: 400px; overflow-y: auto;">
+            {% for message in messages %}
+<div class="mb-3 {% if message.sender == request.user %}text-end{% endif %}">
+    <div class="d-flex align-items-center {% if message.sender == request.user %}justify-content-end{% endif %}">
+        {% if message.sender != request.user %}
+            {% if message.sender.userprofile.image %}
+                <img src="{{ message.sender.userprofile.image.url }}" 
+                     class="rounded-circle me-2" 
+                     style="width: 30px; height: 30px; object-fit: cover;" 
+                     alt="User Image">
+            {% else %}
+                <img src="{% static 'user/images/default_avatar.png' %}" 
+                     class="rounded-circle me-2" 
+                     style="width: 30px; height: 30px; object-fit: cover;" 
+                     alt="Default User Image">
+            {% endif %}
+        {% endif %}
+        <div class="alert {% if message.sender == request.user %}alert-primary{% else %}alert-secondary{% endif %}">
+            {{ message.content }}
+        </div>
+    </div>
+    <small class="text-muted">
+        {{ message.timestamp|date:"d M Y H:i" }} IST
+    </small>
+</div>
+{% endfor %}
+        </div>
+        <div class="card-footer">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="content" class="form-control" placeholder="Type your message..." required>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- Add this script at the end of chat.html -->
+<script>
+// Auto-scroll to bottom on load
+window.onload = function() {
+    const chatBody = document.querySelector('.card-body');
+    chatBody.scrollTop = chatBody.scrollHeight;
+};
+
+// Auto-scroll when new messages are added
+const observer = new MutationObserver(function(mutations) {
+    const chatBody = document.querySelector('.card-body');
+    chatBody.scrollTop = chatBody.scrollHeight;
+});
+
+observer.observe(document.querySelector('.card-body'), {
+    childList: true,
+    subtree: true
+});
+
+
+
+
+
+
+
+
+
+
+<!-- Add this script at the end -->
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Mark messages as read
+    fetch("{% url 'mark_as_read' solution_request.id %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    {% if solution_request and solution_request.id %}
+        fetch("{% url 'mark_as_read' solution_request.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                console.error('Failed to mark messages as read');
+            }
+        });
+    {% else %}
+        console.error("Solution request ID is missing");
+    {% endif %}
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

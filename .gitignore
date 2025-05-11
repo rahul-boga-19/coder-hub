@@ -1,0 +1,12 @@
+CHVE/
+*.pyc
+__pycache__/
+.vscode/
+env/
+venv/
+*.log
+*.sqlite3
+*.db
+instance/
+.DS_Store
+*.egg-info/

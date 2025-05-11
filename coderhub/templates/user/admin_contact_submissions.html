@@ -1,0 +1,50 @@
+{% extends 'user/base_admin.html' %}
+{% block content %}
+ 
+ <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              <h2>Contact</h2>
+                           </div>
+                        </div>
+                     </div>
+    
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Submitted At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for submission in submissions %}
+                        <tr>
+                            <td>{{ submission.name }}</td>
+                            <td>{{ submission.email }}</td>
+                            <td>{{ submission.subject|truncatechars:50 }}</td>
+                            <td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'admin_view_submission' submission.id %}" class="btn btn-sm btn-info">
+                                    <i class="fa fa-eye "></i>
+                                </a>
+                          
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No submissions found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

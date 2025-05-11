@@ -1,0 +1,46 @@
+
+{% extends 'user/base_admin.html' %}
+
+{% block content %}
+
+ <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              <h2>Feedback</h2>
+                           </div>
+                        </div>
+                     </div>
+    
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>User</th>
+                            <th>Rating</th>
+                            <th>Message</th>
+                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for feedback in feedbacks %}
+                        <tr>
+                            <td>{{ feedback.user.email }}</td>
+                            <td>{{ feedback.rating }}</td>
+                            <td>{{ feedback.message|truncatechars:50 }}</td>
+                
+                   
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No feedback found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

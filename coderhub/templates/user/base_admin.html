@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>Admin Panel</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- site icon -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="icon" href="{% static 'user/admin/images/fevicon.png' %}" type="image/png" />
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/bootstrap.min.css' %}" />
+      <!-- site css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/style.css' %}" />
+      <!-- responsive css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/responsive.css' %}" />
+      <!-- color css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/colors.css' %}" />
+      <!-- select bootstrap -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/bootstrap-select.css' %}" />
+      <!-- scrollbar css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/perfect-scrollbar.css' %}" />
+      <!-- custom css -->
+      <link rel="stylesheet" href="{% static 'user/admin/css/custom.css' %}" />
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+   </head>
+ 
+      <style>
+    .profile-image {
+        width: 40px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    <body class="inner_page contact_page">
+      <div class="full_container">
+         <div class="inner_container">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+               <div class="sidebar_blog_1">
+                  <div class="sidebar-header">
+                     <div class="logo_section">
+                        <a href="/admin-panel"><img class="logo_icon img-responsive" src="{% static 'user/images/logo.png' %}" alt="#" /></a>
+                     </div>
+                  </div>
+                  <div class="sidebar_user_info">
+                    <div class="user_profle_side">
+    <div class="user_info">
+        {% if profile and profile.image %}
+        <img src="{{ profile.image.url }}" class="profile-image" alt="Profile">
+        {% else %}
+        <div class="profile-icon">
+            <i class="fa fa-user" style="color: #666;"></i>
+        </div>
+        {% endif %}
+        <h1>{{ user.username }}</h1>
+        <p><span class="online_animation"></span> Online</p>
+    </div>
+</div>
+                  </div>
+               </div>
+               <div class="sidebar_blog_2">
+
+                  <ul class="list-unstyled components">
+                      <li>
+                        <a href="{% url 'admin_panel' %}"">
+                     <i class="fa fa-tachometer red_color"></i> <span>dashboard</span></a>
+                     </li>   <li>
+                        <a href="{% url 'admin_users' %}">
+                         <i class="fa fa-users red_color"></i><span>users</span></a>
+                     </li>
+                     <li><a href="{% url 'admin_subscribers' %}"><i class="fa fa-envelope red_color"></i> <span>news letters</span></a></li>
+                      <li>
+                        <a href="{% url 'admin_contact_submissions' %}">
+                        <i class="fa fa-paper-plane red_color"></i> <span>contact submissions</span></a>
+                     </li>
+                            <li>
+                        <a href="{% url 'admin_quizzes' %}">
+                       <i class="fa fa-question-circle red_color"></i><span>Manage Quizzes</span></a>
+                     </li>
+
+                     <li>
+                        <a href="{% url 'admin_feedback' %}">
+                         <i class="fa fa-comment red_color"></i> <span>feedback</span></a>
+                     </li>
+
+                 <li>
+                        <a href="{% url 'home' %}">
+              <i class="fa fa-eye red_color"></i> <span>view site</span></a>
+                     </li>
+                                <li>
+                        <a href="{% url 'logout' %}">
+                  <i class="fa fa-sign-out red_color"></i> <span>Logout</span></a>
+                     </li>
+                  </ul>
+               </div>
+            </nav>
+             <!-- end sidebar -->
+            <!-- right content -->
+            <div id="content">
+               <!-- topbar -->
+               <div class="topbar">
+                  <nav class="navbar navbar-expand-lg navbar-light">
+                     <div class="full">
+                        <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i class="fa fa-bars"></i></button>
+                        <div class="logo_section">
+                           <a href="/admin-panel"><img class="img-responsive" src="{% static 'user/images/logo.png' %}" alt="#" /></a>
+                        </div>
+                        <div class="right_topbar">
+                           <div class="icon_info">
+                              <ul>
+
+                              </ul>
+                              <ul class="user_profile_dd">
+                       <li class="dropdown">
+  <a class="dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {% if profile and profile.image %}
+      <img class="profile-image" src="{{ profile.image.url }}" alt="Profile">
+    {% else %}
+        <i class="fa fa-user" style="color: #666;"></i>
+      
+    {% endif %}
+    <span class="name_user">{{ user.username }}</span>
+  </a>
+  <div class="dropdown-menu" aria-labelledby="profileDropdown">
+    <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+  </div>
+</li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </nav>
+               </div>
+               <!-- end topbar -->
+               <!-- dashboard inner -->
+               <div class="midde_cont">
+                  <div class="container-fluid">
+                   
+                     {% block content %}
+                     <!-- Content from admin_panel.html will be inserted here -->
+                     {% endblock %}
+                  </div>
+                  <!-- footer -->
+                  
+               <!-- end dashboard inner -->
+            </div>
+         </div>
+      </div>
+
+      <!-- jQuery -->
+      <script src="{% static 'user/admin/js/jquery.min.js' %}"></script>
+   <script src="{% static 'user/admin/js/popper.min.js' %}"></script>
+      <script src="{% static 'user/admin/js/bootstrap.min.js' %}"></script>
+      <!-- wow animation -->
+      <script src="{% static 'user/admin/js/animate.js' %}"></script>
+      <!-- select country -->
+      <script src="{% static 'user/admin/js/bootstrap-select.js' %}"></script>
+      <!-- owl carousel -->
+      <script src="{% static 'user/admin/js/owl.carousel.js' %}"></script>
+      <!-- chart js -->
+      <script src="{% static 'user/admin/js/Chart.min.js' %}"></script>
+      <script src="{% static 'user/admin/js/Chart.bundle.min.js' %}"></script>
+      <script src="{% static 'user/admin/js/utils.js' %}"></script>
+      <script src="{% static 'user/admin/js/analyser.js' %}"></script>
+      <!-- nice scrollbar -->
+      <script src="{% static 'user/admin/js/perfect-scrollbar.min.js' %}"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="{% static 'user/admin/js/chart_custom_style1.js' %}"></script>
+      <script src="{% static 'user/admin/js/custom.js' %}"></script>
+   </body>
+</html>

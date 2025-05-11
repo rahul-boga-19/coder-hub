@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Reward Notification</title>
+    <link rel="stylesheet" href="{% static 'user/css/bootstrap.css' %}">
+</head>
+<body>
+    <h2>Congratulations {{ user.username }}! 🎉</h2>
+    <p>You scored {{ score }}/30 in the {{ quiz.title }} quiz!</p>
+    <p>Your reward details:</p>
+    <ul>
+        <li>Reward Type: Certificate of Achievement</li>
+        <li>Valid Until: {{ expiry_date }}</li>
+        <li>Download Link: [Your Reward Link]</li>
+    </ul>
+    <p>Best regards,<br>Coder's Hub Team</p>
+</body>
+</html>

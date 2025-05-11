@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>User Profile</title>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+     body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+  
+
+ 
+
+}
+
+
+/* Custom styles for profile avatar and other elements */
+.navbar-brand img {
+  max-height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+#sidebarMenu {
+  min-height: 100vh;
+}
+.profile-avatar {
+  width: 180px;
+  height: 180px;
+  border: 4px solid white;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+<style>
+  body {
+    background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+  }
+
+  /* Custom styles for profile avatar and other elements */
+  .navbar-brand img {
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  #sidebarMenu {
+    min-height: 100vh;
+  }
+
+  .profile-avatar {
+    width: 180px;
+    height: 180px;
+    border: 4px solid white;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .profile-avatar:hover {
+    transform: scale(1.05);
+  }
+
+  /* Make .b1 background semi-transparent black */
+  .b1 {
+    border: 1px solid white;
+    color: white;
+    border-radius: 10px;
+       background-color: rgba(0, 0, 0, 0.6);
+
+   }
+
+
+
+
+
+
+
+
+    /* Add this CSS to your existing styles */
+.navbar-nav .email-display {
+   /* Add space between the profile picture and email */
+    color: white; / * Change to desired color */
+    font-size:px; /* Adjust font size if needed */
+}
+.default-icon,
+.navbar [class*="image"] {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; /* Changed from black to transparent */
+    overflow: hidden;
+    border: 1px solid transparent; /* Changed border color to transparent */
+}
+
+.default-icon i {
+    color: white; /* Keep the icon itself white */
+    font-size: 1.5rem;
+}
+
+
+.navbar.menu-open {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+.navbar.menu-open .nav-item {
+    margin-top: 10px;
+}
+
+
+
+
+    /* Optional: You can set a border, if needed */
+
+        body {
+         background: url('{% static "user/images/bg_4.jpg" %}') no-repeat center center fixed;
+   
+ 
+
+}
+
+
+    /* Navbar styling */
+    .navbar {
+            background-color: rgba(0, 0, 0, 0.9) !important;
+    }
+ 
+ 
+
+    .navbar-brand img {
+        height: 60px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .nav-item {
+        font-size: 20px;
+    }
+
+
+
+
+
+</style>
+
+</head>
+<body>
+
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+        <div class="container ">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'user/images/logo.png' %}" loading="lazy" alt="Coder's Hub Logo">
+            </a>
+     
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link " href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'service' %}">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                        </li>
+                    </ul>
+                </div>
+         <ul class="navbar-nav d-flex align-items-center">
+        <li class="nav-item dropdown">
+            {% if user.is_authenticated %}
+                   <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                   id="userDropdown" role="button" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" 
+                             alt="Profile Picture" 
+                             class="default-icon me-2">
+                    {% else %}
+                        <div class="default-icon me-2">
+                            <i class="fa-solid fa-user text-light fs-5"></i>
+                        </div>
+                    {% endif %}
+                    <span class="email-display fs-6">{{ user.email }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" 
+                    aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                        <i class="fa-regular fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'change_password' %}">
+                        <i class="fa-solid fa-gear me-2"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                </ul>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+            {% endif %}
+        </li>
+    </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+<!-- Main Content: User Profile -->
+<div class="container  "  style="margin-top:100px;" >
+  <div class="row justify-content-center">
+    <div class="col-lg-8  b1 col-md-10">
+      <div class=" rounded-3  mt-4">
+        <!-- Avatar -->
+        <div class="d-flex flex-column align-items-center mb-4">
+          {% if profile.image %}
+          <img src="{{ profile.image.url }}" class="profile-avatar img-fluid rounded-circle" alt="Profile Photo" />
+          {% else %}
+          <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:180px; height:180px;">
+            <i class="fas fa-user-circle text-dark " style="font-size:11rem;"></i>
+          </div>
+          {% endif %}
+        </div>
+        <!-- User info -->
+        <h2 class="text-center fw-bold mb-3">{{ user.username }}</h2>
+        <p class="text-center mb-4"><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>
+        <!-- Profile actions -->
+        <div class="d-grid gap-3 mb-4">
+          <form action="{% url 'profile' %}" method="POST" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 justify-content-center">
+            {% csrf_token %}
+            {% if profile.image %}
+            <button type="submit" name="remove_image" class="btn btn-danger w-25 w-md-auto">
+              <i class="fas fa-trash me-2"></i>Remove Photo
+            </button>
+            {% else %}
+            <input type="file" name="image" id="fileInput" hidden onchange="this.form.submit();">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click();">
+              <i class="fa-solid fa-camera me-2"></i>Profile Photo
+            </button>
+            {% endif %}
+          </form>
+          <div class="row">
+              <div class="col"><form action="{% url 'view_messages' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light w-100">
+              <i class="fas fa-comments me-2"></i> Messages
+            </button>
+          </form>
+</div>
+              <div class="col">  <form action="{% url 'my_projects' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light w-100">
+              <i class="fas fa-folder-open me-2"></i>Your Projects
+            </button>
+        </form></div>
+              <div class="col">   
+                      <form action="{% url 'profile_solutions' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light w-100">
+     <i class="fas fa-lightbulb me-2"></i>Solution Requests
+            </button>
+
+
+
+          </form>
+</div>
+          </div>
+          <!-- Logout button -->
+         <!--  <form action="{% url 'view_messages' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-dark w-100">
+              <i class="fas fa-comments me-2"></i> Messages
+            </button>
+          </form>
+             <form action="{% url 'my_projects' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-dark w-100">
+              <i class="fas fa-folder-open me-2"></i>Your Projects
+            </button>
+        </form>
+
+      <form action="{% url 'profile_solutions' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-dark w-100">
+              <i class="fas fa-folder-open me-2"></i>Solution Requests
+            </button>
+
+
+
+          </form> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Show toasts
+  document.querySelectorAll('.toast').forEach(t => {
+    new bootstrap.Toast(t, { autohide: true, delay: 3000 }).show();
+  });
+  // Optional: handle delete modal if present
+  document.getElementById('deleteModal')?.addEventListener('show.bs.modal', function(event) {
+    const button = event.relatedTarget;
+    const projectId = button.getAttribute('data-project-id');
+    const form = document.getElementById('deleteForm');
+    form.action = `{% url 'delete_project' 0 %}`.replace('0', projectId);
+  });
+</script>
+</body>
+</html>

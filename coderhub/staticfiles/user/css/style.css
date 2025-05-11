@@ -1,0 +1,185 @@
+
+  body{
+    background-color: rgb(255, 255, 165);
+  }
+  /* Full-screen background image */
+  .y1 {
+      background: url('{% static 'user/images/bg5.jpg' %}') no-repeat center center fixed;
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding-top: 60px;
+
+      background-color:rgb(43, 46, 53);
+
+  }
+
+  /* Navbar styling */
+  .navbar {
+      background-color: rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .navbar-brand img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      
+  }
+
+  .nav-item {
+      font-size: 20px;
+  }
+
+  /* Content to make scrolling effect */
+  .content {
+      height: 200vh;
+      padding-top: 50px;
+      text-align: center;
+      color: black;
+  }
+
+  .y1  h1, h4   {
+
+
+      font-weight: bold;
+      color: white;
+      font-family:'Courier New', Courier, monospace;
+  }
+
+  .v1{
+  border-radius: 20px;
+  width: 200px;
+  height:60px;
+  color :white;
+  border-color: white;
+
+  }
+
+
+  .a1 ,h3{
+
+      font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+   
+      
+  }
+  .a1 ,p{
+      text-align: justify;
+      font-family:Verdana, Geneva, Tahoma, sans-serif;
+      margin-top: 50px;
+      line-height: 35px;
+      word-spacing: 5px;
+
+
+  }
+
+
+/* Default text color */
+.z1 h3, .z2 h3, .z3 h3 {
+  color: black; /* Ensures text is visible on default */
+  transition: color 0.5s ease-in-out;
+}
+
+/* Ensure text remains visible on hover */
+.z1:hover h3, .z2:hover h3, .z3:hover h3 {
+  color: white !important; /* Makes text visible on green background */
+}
+
+
+ 
+
+  /* Default styling */
+  .z1, .z2, .z3 {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: white; /* Default white background */
+    transition: color 0.5s ease-in-out; /* Smooth text color transition */
+
+  }
+
+  /* Background animation using ::before */
+  .z1::before, .z2::before, .z3::before {
+    content: "";
+    position: absolute;
+    bottom: -100%; /* Start from below */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #68cf68; /* Soft Green */
+    transition: bottom 0.5s ease-in-out;
+    z-index: -1; /* Ensure it's behind the text */
+  }
+
+  /* Hover effect - background moves from bottom to top */
+  .z1:hover::before, .z2:hover::before, .z3:hover::before {
+    bottom: 0; /* Move up to cover the element */
+  }
+
+  /* Ensure text remains visible */
+  .z1, .z2, .z3 {
+    position: relative;
+    z-index: 1;
+
+  }
+
+  /* Optional: Text color change on hover */
+  .z1:hover, .z2:hover, .z3:hover {
+    color: white; /* Change text color */
+  }
+
+
+
+  .z1:hover h3, .z2:hover h3, .z3:hover h3 {
+    color: white; /* Set a visible color for the text */
+}
+
+
+
+  .footer{
+    min-height: 15vh;
+
+
+
+
+    background-color: rgb(92, 83, 83);
+
+ 
+}
+
+.footer i {
+    font-size: 45px; /* Increase size */
+    color: white;
+    margin:20px;
+    cursor: pointer;
+  
+}
+
+
+.footer,h3{
+color: white;  
+
+}
+
+
+.ts{
+  text-decoration-line: none;
+}
+
+
+.footer img{
+  width: 50%;
+
+}
+
+
+.g1{
+
+
+  background-color: white;
+}

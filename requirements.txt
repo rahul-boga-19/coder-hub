@@ -11,3 +11,9 @@ whitenoise==6.6.0  # For static files
 python-dotenv==1.0.0  # For local .env files (optional)
 
 djangorestframework==3.14.0
+
+
+Django==5.0.4  # or your version
+gunicorn==21.2.0
+whitenoise==6.6.0
+psycopg2-binary==2.9.9

@@ -1,19 +1,18 @@
 asgiref==3.8.1
-Django==5.2.1
+Django==5.2.1 
 sqlparse==0.5.3
 tzdata==2025.2
 django-imagekit
 mysqlclient>=2.2.0
 mysql-connector-python
 
-mysqlclient==2.2.0
+
 whitenoise==6.6.0  # For static files
 python-dotenv==1.0.0  # For local .env files (optional)
 
 djangorestframework==3.14.0
 
 
-Django==5.0.4  # or your version
 gunicorn==21.2.0
-whitenoise==6.6.0
+
 psycopg2-binary==2.9.9

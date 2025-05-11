@@ -5,3 +5,7 @@ tzdata==2025.2
 django-imagekit
 mysqlclient>=2.2.0
 mysql-connector-python
+
+mysqlclient==2.2.0
+whitenoise==6.6.0  # For static files
+python-dotenv==1.0.0  # For local .env files (optional)

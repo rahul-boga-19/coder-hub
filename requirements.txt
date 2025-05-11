@@ -3,3 +3,5 @@ Django==5.2.1
 sqlparse==0.5.3
 tzdata==2025.2
 django-imagekit
+mysqlclient>=2.2.0
+mysql-connector-python

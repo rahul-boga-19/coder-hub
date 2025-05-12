@@ -196,3 +196,6 @@ if DJANGO_ENV == 'production':
             'rest_framework.renderers.JSONRenderer',
         )
     }
+
+
+DJANGO_SETTINGS_MODULE = coderhub.coderhub.settings

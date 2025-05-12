@@ -24,12 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', ')yrx1x(khrd(7f=t2mwn+56l$yss$&o&ja+ccw95v94h$g8%+=')  # Use a default only for local dev
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')  # Match Render's env var name  # Use a default only for local dev
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'coder-hub-e3xl.onrender.com,localhost').split(',')
+ALLOWED_HOSTS = ['coder-hub-e3xl.onrender.com', 'localhost']
 
 # Application definition
 
@@ -146,7 +145,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 # Tell Django to compress and cache static files
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ← Add this line

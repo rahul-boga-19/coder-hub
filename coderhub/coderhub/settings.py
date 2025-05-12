@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")  ye code ko ? # Match Render's env var name  # Use a default only for local dev
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")  # Match Render's env var name  # Use a default only for local dev
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'

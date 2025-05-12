@@ -92,14 +92,13 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': 'coderhub_db',               # From "Database" field
+        'USER': 'coderhub_db_user',          # From "Username" field
+        'PASSWORD': 'your_password_here',    # Hidden in screenshot (*******)
+        'HOST': 'dpg-d0gmssidbo4c73bhoung-a',# From "Hostname" field
+        'PORT': '5432',                      # Default PostgreSQL port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['coder-hub-e3xl.onrender.com', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'user',
     'imagekit',
     'rest_framework',
-    'whitenoise.runserver_nostatic',
+    
 
 ]
 

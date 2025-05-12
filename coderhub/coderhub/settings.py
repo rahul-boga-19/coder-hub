@@ -197,4 +197,3 @@ if DJANGO_ENV == 'production':
     }
 
 
-DJANGO_SETTINGS_MODULE = coderhub.coderhub.settings

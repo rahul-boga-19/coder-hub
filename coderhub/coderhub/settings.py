@@ -204,3 +204,8 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
+# Ensure these are set for production
+if DJANGO_ENV == 'production':
+    DEBUG = False
+    ALLOWED_HOSTS = ['coder-hub-e3xl.onrender.com']
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

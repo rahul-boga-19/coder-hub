@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'user',
     'imagekit',
     'rest_framework',
+    'whitenoise.runserver_nostatic',
 
 ]
 

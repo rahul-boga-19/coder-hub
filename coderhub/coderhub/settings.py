@@ -23,8 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+import os
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')  # Match Render's env var name  # Use a default only for local dev
+DEBUG = os.getenv("DEBUG", "False") == "True"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")  ye code ko ? # Match Render's env var name  # Use a default only for local dev
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'

@@ -195,5 +195,7 @@ if DJANGO_ENV == 'production':
             'rest_framework.renderers.JSONRenderer',
         )
     }
-
-
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+}

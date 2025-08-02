@@ -95,11 +95,14 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'coderhub_db',               # From "Database" field
-        'USER': 'coderhub_db_user',          # From "Username" field
-        'PASSWORD': 'your_password_here',    # Hidden in screenshot (*******)
-        'HOST': 'dpg-d0gmssidbo4c73bhoung-a',# From "Hostname" field
-        'PORT': '5432',                      # Default PostgreSQL port
+        'NAME': os.getenv('DB_NAME', 'coderhub_db'),
+        'USER': os.getenv('DB_USER', 'coderhub_db_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'rahulboga1909'),
+        'HOST': os.getenv('DB_HOST', 'dpg-d0gmssidbo4c73bhoung-a'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+        'OPTIONS': {
+            'sslmode': 'require'
+        }
     }
 }
 
